@@ -19,7 +19,8 @@
 	"cost"
   ],
   "dependencies": {
-	  "moving-volume-calculator": ">=0.0.2"
+	  "moving-volume-calculator": ">=0.0.2",
+	  "address-searcher": ">=1.6.6"
   },
   "author": "Zenoo",
   "license": "MIT",

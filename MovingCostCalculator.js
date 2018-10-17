@@ -18,16 +18,107 @@ class MovingCostCalculator{ //eslint-disable-line no-unused-vars
 
         //Errors checking
         if(!this._wrapper) throw new Error('MovingCostCalculator: '+(typeof target == 'string' ? 'The selector `'+target+'` didn\'t match any element.' : 'The element you provided was undefined'));
-        if(this._wrapper.classList.contains('mcc-wrapper')) throw new Error('MovingCostCalculator: The element has already been initialized.');
+		if(this._wrapper.classList.contains('mcc-wrapper')) throw new Error('MovingCostCalculator: The element has already been initialized.');
 
         /** @private */
 		this._parameters = {
 			lang: 'en',
+			debug: false,
 			...parameters
 		};
 
-		this._build();
-        this._listen();
+		this._loadDependencies().then(() => {
+			if(this._parameters.debug) console.log('MovingCostCalculator: DEPENDENCIES LOADED !');
+
+			this._build();
+			this._listen();
+		});
+	}
+
+	/**
+	 * Loads the dependencies
+	 * @returns {Promise} A Promise that resolves when all the dependencies are found or loaded
+	 * @private
+	 */
+	_loadDependencies(){
+		if(this._parameters.debug) console.log('MovingCostCalculator: LOADING DEPENDENCIES ...');
+
+		const movingVolumeCalculatorDependency = new Promise(solve => {
+			if(typeof MovingVolumeCalculator == 'function'){
+				solve();
+			}else{
+				const movingVolumeCalculatorScript = new Promise(resolve => {
+					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/moving-volume-calculator/master/MovingVolumeCalculator.min.js', () => {
+						if(this._parameters.debug) console.log('DEPENDENCIES: MovingVolumeCalculator script LOADED !');
+						resolve();
+					});
+				});
+				const movingVolumeCalculatorStyle = new Promise(resolve => {
+					this._loadResource('style', 'https://gitcdn.link/repo/Zenoo/moving-volume-calculator/master/MovingVolumeCalculator.min.css', () => {
+						if(this._parameters.debug) console.log('DEPENDENCIES: MovingVolumeCalculator style LOADED !');
+						resolve();
+					});
+				});
+
+				Promise.all([movingVolumeCalculatorScript, movingVolumeCalculatorStyle]).then(() => {
+					solve();
+				});
+			}
+		});
+
+		const addressSearchDependency = new Promise(solve => {
+			if(typeof AddressSearch == 'function'){
+				solve();
+			}else{
+				const addressSearchScript = new Promise(resolve => {
+					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/address-search/master/address-search.min.js', () => {
+						if(this._parameters.debug) console.log('DEPENDENCIES: AddressSearch script LOADED !');
+						resolve();
+					});
+				});
+				const addressSearchStyle = new Promise(resolve => {
+					this._loadResource('style', 'https://gitcdn.link/repo/Zenoo/address-search/master/address-search.min.css', () => {
+						if(this._parameters.debug) console.log('DEPENDENCIES: AddressSearch style LOADED !');
+						resolve();
+					});
+				});
+
+				Promise.all([addressSearchScript, addressSearchStyle]).then(() => {
+					solve();
+				});
+			}
+		});
+
+		return Promise.all([movingVolumeCalculatorDependency, addressSearchDependency]);
+	}
+
+	/**
+	 * Loads a resource
+	 * @param {String} type 
+	 * @param {String} url 
+	 * @param {Function} callback 
+	 * @private
+	 */
+	_loadResource(type, url, callback){
+		const [head] = document.getElementsByTagName('head');
+
+		if(type == 'script'){
+			const script = document.createElement('script');
+			
+			script.src = url;
+			script.onload = callback;
+		
+			head.appendChild(script);
+		}else{
+			const link = document.createElement('link');
+			
+			link.href = url;
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.onload = callback;
+		
+			head.appendChild(link);
+		}
 	}
 
 	/**

@@ -8,11 +8,9 @@ Calculate the cost for your move
 
 * **Installation**
 
-Simply import MovingCostCalculator and [MovingVolumeCalculator](https://github.com/Zenoo/moving-volume-calculator) into your HTML.
+Simply import MovingCostCalculator into your HTML.
 ```
-<link rel="stylesheet" type="text/css" href="https://gitcdn.link/repo/Zenoo/moving-volume-calculator/master/MovingVolumeCalculator.min.css">
 <link rel="stylesheet" type="text/css" href="https://gitcdn.link/repo/Zenoo/moving-cost-calculator/master/MovingCostCalculator.min.css">
-<script src="https://gitcdn.link/repo/Zenoo/moving-volume-calculator/master/MovingVolumeCalculator.min.js"></script>	
 <script src="https://gitcdn.link/repo/Zenoo/moving-cost-calculator/master/MovingCostCalculator.min.js"></script>	
 ```
 * **How to use**

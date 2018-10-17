@@ -18,6 +18,9 @@
 	"calculator",
 	"cost"
   ],
+  "dependencies": {
+	  "moving-volume-calculator": ">=0.0.2"
+  },
   "author": "Zenoo",
   "license": "MIT",
   "bugs": {

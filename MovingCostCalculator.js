@@ -228,7 +228,6 @@ class MovingCostCalculator{
 		 */
 		this._buildAddresses();
 
-
 		/*
 		 * Volume
 		 */

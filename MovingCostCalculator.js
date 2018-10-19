@@ -19,6 +19,36 @@
  * @see {@link https://developers.google.com/maps/documentation/javascript/reference/3/places-service#PlaceResult}
  */
 
+ /**
+ * Translations object
+ * @typedef Lang
+ * @type {Object.<String, String>}
+ * @memberof MovingCostCalculator
+ * @example
+ * {
+ *   title: 'Estimate your moving cost',
+ *   addressesTitle: 'Your addresses'
+ * }
+ */
+
+ /**
+ * Translations object list
+ * @typedef Dictionary
+ * @type {Object.<String, MovingCostCalculator.Lang>}
+ * @memberof MovingCostCalculator
+ * @example
+ * {
+ *   en: {
+ *     title: 'Estimate your moving cost',
+ *     addressesTitle: 'Your addresses'
+ *   },
+ *   fr: {
+ *     title: 'Estimez le coût de votre déménagement',
+ *     addressesTitle: 'Vos adresses'
+ *   }
+ * }
+ */
+
 /** MovingCostCalculator Class used to handle the MovingCostCalculator module */
 class MovingCostCalculator{
 
@@ -35,21 +65,22 @@ class MovingCostCalculator{
     constructor(target, parameters){
 		/**
 		 * Links to available elements
-		 * @property {Element} 			wrapper 							The highest module element
-		 * @property {Object} 			departure 							Holder for the departure elements
-		 * @property {AddressSearch} 	departure.address 					Departure address AddressSearch
-		 * @property {Object} 			departure.options 					Departure address options holder
-		 * @property {Element} 			departure.options.floor	 			Departure address floor element
-		 * @property {Element} 			departure.options.lift 				Departure address lift element
-		 * @property {Element} 			departure.options.furnitureLift 	Departure address furniture lift element
-		 * @property {Element} 			departure.options.porterageDistance Departure address porterage distance element
-		 * @property {Object} 			arrival 							Holder for the arrival elements
-		 * @property {AddressSearch} 	arrival.address 					Arrival address AddressSearch
-		 * @property {Object} 			arrival.options 					Arrival address options holder
-		 * @property {Element} 			arrival.options.floor 				Arrival address floor element
-		 * @property {Element} 			arrival.options.lift 				Arrival address lift element
-		 * @property {Element} 			arrival.options.furnitureLift 		Arrival address furniture lift element
-		 * @property {Element} 			arrival.options.porterageDistance 	Arrival address porterage distance element
+		 * @property {Element} 					wrapper 							The highest module element
+		 * @property {Object} 					departure 							Holder for the departure elements
+		 * @property {AddressSearch} 			departure.address 					Departure address AddressSearch
+		 * @property {Object} 					departure.options 					Departure address options holder
+		 * @property {Element} 					departure.options.floor	 			Departure address floor element
+		 * @property {Element} 					departure.options.lift 				Departure address lift element
+		 * @property {Element} 					departure.options.furnitureLift 	Departure address furniture lift element
+		 * @property {Element} 					departure.options.porterageDistance Departure address porterage distance element
+		 * @property {Object} 					arrival 							Holder for the arrival elements
+		 * @property {AddressSearch} 			arrival.address 					Arrival address AddressSearch
+		 * @property {Object} 					arrival.options 					Arrival address options holder
+		 * @property {Element} 					arrival.options.floor 				Arrival address floor element
+		 * @property {Element} 					arrival.options.lift 				Arrival address lift element
+		 * @property {Element} 					arrival.options.furnitureLift 		Arrival address furniture lift element
+		 * @property {Element} 					arrival.options.porterageDistance 	Arrival address porterage distance element
+		 * @property {MovingVolumeCalculator} 	volume 								volume MovingVolumeCalculator
 		 * @private
 		 */
 		this._elements = {
@@ -71,7 +102,8 @@ class MovingCostCalculator{
 					furnitureLift: null,
 					porterageDistance: null
 				}
-			}
+			},
+			volume: null
 		};
 
         this._elements.wrapper = target instanceof Element ? target : document.querySelector(target);
@@ -104,6 +136,8 @@ class MovingCostCalculator{
 		 * @property {Boolean} 				addresses.arrival.options.lift 				 	Does the address have a lift ?
 		 * @property {Boolean} 				addresses.arrival.options.furnitureLift 		Does the address require a furniture lift ?
 		 * @property {Number}  				addresses.arrival.options.porterageDistance 	The porterage distance approximate
+		 * @property {Number}  				volume											The volume
+		 * @property {Number}  				volumeData										The additional volume data
 		 * @example
 		 * {
 		 *   addresses: {
@@ -125,7 +159,9 @@ class MovingCostCalculator{
 		 *         porterageDistance: 5
 		 *       }
 		 *     }
-		 *   }
+		 *   },
+		 *   volume: 0,
+		 *   volumeData: {}
 		 * };
 		 */
 		this.data = {
@@ -148,7 +184,9 @@ class MovingCostCalculator{
 						porterageDistance: 5
 					}
 				}
-			}
+			},
+			volume: 0,
+			volumeData: {}
 		};
 		
 		this._loadDictionary();
@@ -392,6 +430,7 @@ class MovingCostCalculator{
 		section.appendChild(input);
 		this._elements.departure.address = new AddressSearch(input);
 
+		div.classList.add('mcc-address-options');
 		section.appendChild(div);
 		this._buildAddressOptions(this._elements.departure.options, div);
 
@@ -405,6 +444,7 @@ class MovingCostCalculator{
 		this._elements.arrival.address = new AddressSearch(input);
 
 		div = document.createElement('div');
+		div.classList.add('mcc-address-options');
 		section.appendChild(div);
 		this._buildAddressOptions(this._elements.arrival.options, div);
 	}
@@ -452,6 +492,7 @@ class MovingCostCalculator{
 	_buildVolume(){
 		let title = document.createElement('title'),
 			section = document.createElement('section');
+			
 
 		section = document.createElement('section');
 		section.classList.add('mcc-volume');
@@ -460,6 +501,11 @@ class MovingCostCalculator{
 		title = document.createElement('h4');
 		title.innerHTML = this._translated().volumeTitle;
 		section.appendChild(title);
+
+		const div = document.createElement('div');
+
+		section.appendChild(div);
+		this._elements.volume = new MovingVolumeCalculator(div);
 	}
 
 	/**
@@ -556,6 +602,24 @@ class MovingCostCalculator{
 		
 		this._elements.arrival.options.porterageDistance.addEventListener('change', () => {
 			this.data.addresses.arrival.options.porterageDistance = +this._elements.arrival.options.porterageDistance.value;
+		});
+
+		/*
+		 * Volume
+		 */
+		this._elements.volume.onChange(value => {
+			if(this._elements.volume.isValid()){
+				this.data.volume = value;
+				this.data.volumeData = this._elements.volume.data;
+
+				// Enable next step
+			}else{
+				// Disable next step
+			}
+		}).onValidate(data => {
+			this.data.volume = this._elements.volume.volume;
+			this.data.volumeData = data;
+			// Enable next step
 		});
 	}
 

@@ -374,7 +374,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line17">line 17</a>
+        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line23">line 23</a>
     </li></ul></dd>
     
 
@@ -422,99 +422,516 @@
 
         
             
-<h4 class="name" id="arrivalAddress"><span class="type-signature"></span>arrivalAddress<span class="type-signature"> :<a href="external-AddressSearch.html">external:AddressSearch</a></span></h4>
+<h4 class="name" id="data"><span class="type-signature"></span>data<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Arrival address field
+    The calculator's available data
 </div>
 
 
 
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="external-AddressSearch.html">external:AddressSearch</a></span>
-
-
-        </li>
-    </ul>
 
 
 
 
-
-<dl class="details">
+    <h5 class="subsection-title">Properties:</h5>
 
     
 
-    
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line300">line 300</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
+        <th>Type</th>
 
         
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
             
-<h4 class="name" id="departureAddress"><span class="type-signature"></span>departureAddress<span class="type-signature"> :<a href="external-AddressSearch.html">external:AddressSearch</a></span></h4>
-
-
-
-
-<div class="description">
-    Departure address field
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
+                <td class="name"><code>addresses</code></td>
             
-<span class="param-type"><a href="external-AddressSearch.html">external:AddressSearch</a></span>
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
 
 
-        </li>
-    </ul>
+            
+            </td>
 
+            
+
+            
+
+            <td class="description last">Addresses data
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>departure</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Departure address data
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="external-PlaceResult.html">external:PlaceResult</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Arrival address options
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>floor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' floor</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lift</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Does the address have a lift ?</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>furnitureLift</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Does the address require a furniture lift ?</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>porterageDistance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The porterage distance approximate</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>arrival</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Arrival address data
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="external-PlaceResult.html">external:PlaceResult</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address value</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Departure address options
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>floor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' floor</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lift</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Does the address have a lift ?</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>furnitureLift</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Does the address require a furniture lift ?</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>porterageDistance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The porterage distance approximate</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -548,7 +965,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line288">line 288</a>
+        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line131">line 131</a>
     </li></ul></dd>
     
 
@@ -561,6 +978,11 @@
 
 
 
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>{  addresses: {    departure: {      value: '',      options: {        floor: 0,        lift: false,        furnitureLift: false,        porterageDistance: 5      }    },    arrival: {      value: '',      options: {        floor: 0,        lift: false,        furnitureLift: false,        porterageDistance: 5      }    }  }};</code></pre>
 
 
 
@@ -677,7 +1099,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line344">line 344</a>
+        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line595">line 595</a>
     </li></ul></dd>
     
 
@@ -763,7 +1185,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line334">line 334</a>
+        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line585">line 585</a>
     </li></ul></dd>
     
 
@@ -898,7 +1320,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line325">line 325</a>
+        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line576">line 576</a>
     </li></ul></dd>
     
 
@@ -964,13 +1386,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Externals</h3><ul><li><a href="external-AddressSearch.html">AddressSearch</a></li><li><a href="external-MovingVolumeCalculator.html">MovingVolumeCalculator</a></li></ul><h3>Classes</h3><ul><li><a href="MovingCostCalculator.html">MovingCostCalculator</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Externals</h3><ul><li><a href="external-AddressSearch.html">AddressSearch</a></li><li><a href="external-MovingVolumeCalculator.html">MovingVolumeCalculator</a></li><li><a href="external-PlaceResult.html">PlaceResult</a></li></ul><h3>Classes</h3><ul><li><a href="MovingCostCalculator.html">MovingCostCalculator</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu Oct 18 2018 14:15:07 GMT+0200 (Romance Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Oct 19 2018 11:28:21 GMT+0200 (Romance Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>

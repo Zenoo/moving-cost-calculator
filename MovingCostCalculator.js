@@ -13,6 +13,12 @@
  * @see {@link https://zenoo.github.io/moving-volume-calculator/MovingVolumeCalculator.html}
  */
 
+ /**
+ * The PlaceResult class from Google Places API
+ * @external PlaceResult
+ * @see {@link https://developers.google.com/maps/documentation/javascript/reference/3/places-service#PlaceResult}
+ */
+
 /** MovingCostCalculator Class used to handle the MovingCostCalculator module */
 class MovingCostCalculator{
 
@@ -27,21 +33,122 @@ class MovingCostCalculator{
 	 * @param {MovingCostCalculator.Dictionary}   	[parameters.dictionary]  				Adds custom translations to the dictionary
      */
     constructor(target, parameters){
-        /** 
-		 * The element in which the module will be placed
-		 * @private 
+		/**
+		 * Links to available elements
+		 * @property {Element} 			wrapper 							The highest module element
+		 * @property {Object} 			departure 							Holder for the departure elements
+		 * @property {AddressSearch} 	departure.address 					Departure address AddressSearch
+		 * @property {Object} 			departure.options 					Departure address options holder
+		 * @property {Element} 			departure.options.floor	 			Departure address floor element
+		 * @property {Element} 			departure.options.lift 				Departure address lift element
+		 * @property {Element} 			departure.options.furnitureLift 	Departure address furniture lift element
+		 * @property {Element} 			departure.options.porterageDistance Departure address porterage distance element
+		 * @property {Object} 			arrival 							Holder for the arrival elements
+		 * @property {AddressSearch} 	arrival.address 					Arrival address AddressSearch
+		 * @property {Object} 			arrival.options 					Arrival address options holder
+		 * @property {Element} 			arrival.options.floor 				Arrival address floor element
+		 * @property {Element} 			arrival.options.lift 				Arrival address lift element
+		 * @property {Element} 			arrival.options.furnitureLift 		Arrival address furniture lift element
+		 * @property {Element} 			arrival.options.porterageDistance 	Arrival address porterage distance element
+		 * @private
 		 */
-        this._wrapper = target instanceof Element ? target : document.querySelector(target);
+		this._elements = {
+			wrapper: null,
+			departure: {
+				address: null,
+				options: {
+					floor: null,
+					lift: null,
+					furnitureLift: null,
+					porterageDistance: null
+				}
+			},
+			arrival: {
+				address: null,
+				options: {
+					floor: null,
+					lift: null,
+					furnitureLift: null,
+					porterageDistance: null
+				}
+			}
+		};
+
+        this._elements.wrapper = target instanceof Element ? target : document.querySelector(target);
 
         //Errors checking
-        if(!this._wrapper) throw new Error('MovingCostCalculator: '+(typeof target == 'string' ? 'The selector `'+target+'` didn\'t match any element.' : 'The element you provided was undefined'));
-		if(this._wrapper.classList.contains('mcc-wrapper')) throw new Error('MovingCostCalculator: The element has already been initialized.');
+        if(!this._elements.wrapper) throw new Error('MovingCostCalculator: '+(typeof target == 'string' ? 'The selector `'+target+'` didn\'t match any element.' : 'The element you provided was undefined'));
+		if(this._elements.wrapper.classList.contains('mcc-wrapper')) throw new Error('MovingCostCalculator: The element has already been initialized.');
 
         /** @private */
 		this._parameters = {
 			lang: 'en',
 			debug: false,
 			...parameters
+		};
+
+		/**
+		 * The calculator's available data
+		 * @property {Object}  				addresses 									 	Addresses data
+		 * @property {Object}  				addresses.departure 							Departure address data
+		 * @property {external:PlaceResult} addresses.departure.value 					 	Address value
+		 * @property {Object}  				addresses.departure.options 					Arrival address options
+		 * @property {Number}  				addresses.departure.options.floor 			 	Address' floor
+		 * @property {Boolean} 				addresses.departure.options.lift 			 	Does the address have a lift ?
+		 * @property {Boolean} 				addresses.departure.options.furnitureLift 	 	Does the address require a furniture lift ?
+		 * @property {Number}  				addresses.departure.options.porterageDistance 	The porterage distance approximate
+		 * @property {Object}  				addresses.arrival 							 	Arrival address data
+		 * @property {external:PlaceResult} addresses.arrival.value 						Address value
+		 * @property {Object}  				addresses.arrival.options 					 	Departure address options
+		 * @property {Number}  				addresses.arrival.options.floor 				Address' floor
+		 * @property {Boolean} 				addresses.arrival.options.lift 				 	Does the address have a lift ?
+		 * @property {Boolean} 				addresses.arrival.options.furnitureLift 		Does the address require a furniture lift ?
+		 * @property {Number}  				addresses.arrival.options.porterageDistance 	The porterage distance approximate
+		 * @example
+		 * {
+		 *   addresses: {
+		 *     departure: {
+		 *       value: '',
+		 *       options: {
+		 *         floor: 0,
+		 *         lift: false,
+		 *         furnitureLift: false,
+		 *         porterageDistance: 5
+		 *       }
+		 *     },
+		 *     arrival: {
+		 *       value: '',
+		 *       options: {
+		 *         floor: 0,
+		 *         lift: false,
+		 *         furnitureLift: false,
+		 *         porterageDistance: 5
+		 *       }
+		 *     }
+		 *   }
+		 * };
+		 */
+		this.data = {
+			addresses: {
+				departure: {
+					value: '',
+					options: {
+						floor: 0,
+						lift: false,
+						furnitureLift: false,
+						porterageDistance: 5
+					}
+				},
+				arrival: {
+					value: '',
+					options: {
+						floor: 0,
+						lift: false,
+						furnitureLift: false,
+						porterageDistance: 5
+					}
+				}
+			}
 		};
 		
 		this._loadDictionary();
@@ -189,7 +296,13 @@ class MovingCostCalculator{
 				estimationsTitle: 'Estimations',
 				departureAddress: 'Departure address',
 				arrivalAddress: 'Arrival address',
-				moreAddressOptions: 'More options'
+				moreAddressOptions: 'More options',
+				floor: 'Floor',
+				lift: 'Lift',
+				furnitureLift: 'Furniture Lift',
+				porterageDistance: 'Porterage Distance',
+				yes: 'Yes',
+				no: 'No'
 			},
 			fr: {
 				title: 'Estimez le coût de votre déménagement',
@@ -198,7 +311,13 @@ class MovingCostCalculator{
 				estimationsTitle: 'Estimations',
 				departureAddress: 'Adresse de départ',
 				arrivalAddress: 'Adresse d\'arrivée',
-				moreAddressOptions: 'Plus d\'options'
+				moreAddressOptions: 'Plus d\'options',
+				floor: 'Etage',
+				lift: 'Ascenseur',
+				furnitureLift: 'Monte-meubles',
+				porterageDistance: 'Distance de portage',
+				yes: 'Oui',
+				no: 'Non'
 			}
 		};
 		
@@ -211,17 +330,15 @@ class MovingCostCalculator{
      * @private
      */
     _build(){
-		this._wrapper.classList.add('mcc-wrapper');
-
-		let title = document.createElement('title'),
-			section = document.createElement('section');
+		this._elements.wrapper.classList.add('mcc-wrapper');
 
 		/*
 		 * Title
 		 */
-		title = document.createElement('h3');
+		const title = document.createElement('h3');
+
 		title.innerHTML = this._translated().title;
-		this._wrapper.appendChild(title);
+		this._elements.wrapper.appendChild(title);
 
 		/*
 		 * Addresses
@@ -231,31 +348,22 @@ class MovingCostCalculator{
 		/*
 		 * Volume
 		 */
-		section = document.createElement('section');
-		section.classList.add('mcc-volume');
-		this._wrapper.appendChild(section);
+		this._buildVolume();
 
-		title = document.createElement('h4');
-		title.innerHTML = this._translated().volumeTitle;
-		section.appendChild(title);
+		/*
+		 * Contact
+		 */
+		this._buildContact();
 
 		/*
 		 * Loader
 		 */
-		section = document.createElement('section');
-		section.classList.add('mcc-loader');
-		this._wrapper.appendChild(section);
+		this._buildLoader();
 
 		/*
 		 * Estimations
 		 */
-		section = document.createElement('section');
-		section.classList.add('mcc-estimations');
-		this._wrapper.appendChild(section);
-
-		title = document.createElement('h4');
-		title.innerHTML = this._translated().estimationsTitle;
-		section.appendChild(title);
+		this._buildEstimations();
 	}
 
 	/**
@@ -266,37 +374,133 @@ class MovingCostCalculator{
 		let title = document.createElement('title'),
 			section = document.createElement('section'),
 			p = document.createElement('p'),
-			input = document.createElement('input');
+			input = document.createElement('input'),
+			div = document.createElement('div');
 
 		section = document.createElement('section');
 		section.classList.add('mcc-addresses');
-		this._wrapper.appendChild(section);
+		this._elements.wrapper.appendChild(section);
 
 		title = document.createElement('h4');
 		title.innerHTML = this._translated().addressesTitle;
 		section.appendChild(title);
 
+		// Departure
 		p.innerText = this._translated().departureAddress;
 		section.appendChild(p);
 
 		section.appendChild(input);
-		/**
-		 * Departure address field
-		 * @type {external:AddressSearch}
-		 */
-		this.departureAddress = new AddressSearch(input);
+		this._elements.departure.address = new AddressSearch(input);
 
+		section.appendChild(div);
+		this._buildAddressOptions(this._elements.departure.options, div);
+
+		// Arrival
 		p = document.createElement('p');
 		p.innerText = this._translated().arrivalAddress;
 		section.appendChild(p);
 
 		input = document.createElement('input');
 		section.appendChild(input);
-		/**
-		 * Arrival address field
-		 * @type {external:AddressSearch}
-		 */
-		this.arrivalAddress = new AddressSearch(input);
+		this._elements.arrival.address = new AddressSearch(input);
+
+		div = document.createElement('div');
+		section.appendChild(div);
+		this._buildAddressOptions(this._elements.arrival.options, div);
+	}
+
+	/**
+     * Builds the address' options
+	 * @param {Object} options
+	 * @param {Element} holder
+     * @private
+     */
+	_buildAddressOptions(options, holder){
+		Object.keys(options).forEach(option => {
+			const p = document.createElement('p'),
+				span = document.createElement('span');
+
+			if(['lift', 'furnitureLift'].includes(option)){
+				options[option] = document.createElement('select');
+
+				let optionTag = document.createElement('option');
+
+				optionTag.value = 'false';
+				optionTag.innerText = this._translated().no;
+				options[option].appendChild(optionTag);
+
+				optionTag = document.createElement('option');
+				optionTag.value = 'true';
+				optionTag.innerText = this._translated().yes;
+				options[option].appendChild(optionTag);
+			}else{
+				options[option] = document.createElement('input');
+			}
+
+			span.innerText = this._translated()[option];
+			
+			p.appendChild(span);
+			p.appendChild(options[option]);
+			holder.appendChild(p);
+		});
+	}
+
+	/**
+     * Builds the volume module
+     * @private
+     */
+	_buildVolume(){
+		let title = document.createElement('title'),
+			section = document.createElement('section');
+
+		section = document.createElement('section');
+		section.classList.add('mcc-volume');
+		this._elements.wrapper.appendChild(section);
+
+		title = document.createElement('h4');
+		title.innerHTML = this._translated().volumeTitle;
+		section.appendChild(title);
+	}
+
+	/**
+     * Builds the contact module
+     * @private
+     */
+	_buildContact(){
+		let section = document.createElement('section');
+
+		section = document.createElement('section');
+		section.classList.add('mcc-contact');
+		this._elements.wrapper.appendChild(section);
+	}
+
+	/**
+     * Builds the loader module
+     * @private
+     */
+	_buildLoader(){
+		let section = document.createElement('section');
+
+		section = document.createElement('section');
+		section.classList.add('mcc-loader');
+		this._elements.wrapper.appendChild(section);
+	}
+
+	/**
+     * Builds the estimations module
+     * @private
+     */
+	_buildEstimations(){
+		let title = document.createElement('title'),
+			section = document.createElement('section');
+
+		section = document.createElement('section');
+		section.classList.add('mcc-estimations');
+		this._elements.wrapper.appendChild(section);
+
+		title = document.createElement('h4');
+		title.innerHTML = this._translated().estimationsTitle;
+		section.appendChild(title);
 	}
 
 	/**
@@ -304,7 +508,55 @@ class MovingCostCalculator{
      * @private
      */
     _listen(){
+		/*
+		 * Departure address
+		 */
+		this._elements.departure.address.onSelect(address => {
+			this.data.departure.address = address;
 
+			// Check if both addresses are full => enable next step
+		});
+
+		this._elements.departure.options.floor.addEventListener('change', () => {
+			this.data.addresses.departure.options.floor = +this._elements.departure.options.floor.value;
+		});
+
+		this._elements.departure.options.lift.addEventListener('change', () => {
+			this.data.addresses.departure.options.lift = this._elements.departure.options.lift.value == 'true';
+		});
+
+		this._elements.departure.options.furnitureLift.addEventListener('change', () => {
+			this.data.addresses.departure.options.furnitureLift = this._elements.departure.options.furnitureLift.value == 'true';
+		});
+		
+		this._elements.departure.options.porterageDistance.addEventListener('change', () => {
+			this.data.addresses.departure.options.porterageDistance = +this._elements.departure.options.porterageDistance.value;
+		});
+
+		/*
+		 * Arrival address
+		 */
+		this._elements.arrival.address.onSelect(address => {
+			this.data.arrival.address = address;
+
+			// Check if both addresses are full => enable next step
+		});
+
+		this._elements.arrival.options.floor.addEventListener('change', () => {
+			this.data.addresses.arrival.options.floor = +this._elements.arrival.options.floor.value;
+		});
+
+		this._elements.arrival.options.lift.addEventListener('change', () => {
+			this.data.addresses.arrival.options.lift = this._elements.arrival.options.lift.value == 'true';
+		});
+
+		this._elements.arrival.options.furnitureLift.addEventListener('change', () => {
+			this.data.addresses.arrival.options.furnitureLift = this._elements.arrival.options.furnitureLift.value == 'true';
+		});
+		
+		this._elements.arrival.options.porterageDistance.addEventListener('change', () => {
+			this.data.addresses.arrival.options.porterageDistance = +this._elements.arrival.options.porterageDistance.value;
+		});
 	}
 
 	/**
@@ -331,8 +583,8 @@ class MovingCostCalculator{
      * Removes any MovingCostCalculator mutation from the DOM
      */
     destroy(){
-		this._wrapper.innerHTML = '';
-		this._wrapper.classList.remove('mcc-wrapper');
+		this._elements.wrapper.innerHTML = '';
+		this._elements.wrapper.classList.remove('mcc-wrapper');
 	}
 
 	/**

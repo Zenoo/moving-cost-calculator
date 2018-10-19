@@ -1,6 +1,6 @@
 {
   "name": "moving-cost-calculator",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Calculate the cost for your move",
   "main": "MovingCostCalculator.js",
   "scripts": {
@@ -11,16 +11,16 @@
     "url": "git+https://github.com/Zenoo/moving-cost-calculator.git"
   },
   "keywords": [
-	"move",
-	"moving",
-	"estimate",
-	"quote",
-	"calculator",
-	"cost"
+    "move",
+    "moving",
+    "estimate",
+    "quote",
+    "calculator",
+    "cost"
   ],
   "dependencies": {
-	  "moving-volume-calculator": ">=0.0.2",
-	  "address-searcher": ">=1.6.6"
+    "moving-volume-calculator": ">=0.0.2",
+    "address-searcher": ">=1.6.6"
   },
   "author": "Zenoo",
   "license": "MIT",

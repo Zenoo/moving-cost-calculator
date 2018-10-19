@@ -60,6 +60,7 @@ class MovingCostCalculator{
      * @param {String}           					[parameters.lang=en]     				The lang to use
      * @param {Boolean}           					[parameters.debug=false]     			Show debugging logs ?
      * @param {String}           					[parameters.googleAPIKey]     			Your Google API key (Only needed if the Google API script isn't imported before)
+     * @param {Boolean}           					[parameters.askForContact]     			Should the calculator ask for a mail before giving the results ?
 	 * @param {MovingCostCalculator.Dictionary}   	[parameters.dictionary]  				Adds custom translations to the dictionary
      */
     constructor(target, parameters){
@@ -81,6 +82,7 @@ class MovingCostCalculator{
 		 * @property {Element} 					arrival.options.furnitureLift 		Arrival address furniture lift element
 		 * @property {Element} 					arrival.options.porterageDistance 	Arrival address porterage distance element
 		 * @property {MovingVolumeCalculator} 	volume 								volume MovingVolumeCalculator
+		 * @property {Element} 					contact 							Contact element
 		 * @private
 		 */
 		this._elements = {
@@ -103,7 +105,8 @@ class MovingCostCalculator{
 					porterageDistance: null
 				}
 			},
-			volume: null
+			volume: null,
+			contact: null
 		};
 
         this._elements.wrapper = target instanceof Element ? target : document.querySelector(target);
@@ -116,6 +119,7 @@ class MovingCostCalculator{
 		this._parameters = {
 			lang: 'en',
 			debug: false,
+			askForContact: true,
 			...parameters
 		};
 
@@ -138,6 +142,7 @@ class MovingCostCalculator{
 		 * @property {Number}  				addresses.arrival.options.porterageDistance 	The porterage distance approximate
 		 * @property {Number}  				volume											The volume
 		 * @property {Number}  				volumeData										The additional volume data
+		 * @property {String}  				contact											The user's mail
 		 * @example
 		 * {
 		 *   addresses: {
@@ -161,7 +166,8 @@ class MovingCostCalculator{
 		 *     }
 		 *   },
 		 *   volume: 0,
-		 *   volumeData: {}
+		 *   volumeData: {},
+		 *   contact: ''
 		 * };
 		 */
 		this.data = {
@@ -186,7 +192,8 @@ class MovingCostCalculator{
 				}
 			},
 			volume: 0,
-			volumeData: {}
+			volumeData: {},
+			contact: ''
 		};
 		
 		this._loadDictionary();
@@ -237,10 +244,12 @@ class MovingCostCalculator{
 				solve();
 			}else{
 				//Remove old script if it was here
-				const gMapScript = document.querySelector('script[src^="https://maps.googleapis.com"]');
+				const gMapScripts = document.querySelectorAll('script[src^="https://maps.googleapis.com"]');
 
-				if(gMapScript){
-					gMapScript.remove();
+				if(gMapScripts.length){
+					gMapScripts.forEach(gMapScript => {
+						gMapScript.remove();
+					});
 					if(google) Reflect.deleteProperty(google, 'maps');
 				}
 
@@ -340,7 +349,8 @@ class MovingCostCalculator{
 				furnitureLift: 'Furniture Lift',
 				porterageDistance: 'Porterage Distance',
 				yes: 'Yes',
-				no: 'No'
+				no: 'No',
+				enterContact: 'Please enter your mail to access your estimations'
 			},
 			fr: {
 				title: 'Estimez le coût de votre déménagement',
@@ -355,7 +365,8 @@ class MovingCostCalculator{
 				furnitureLift: 'Monte-meubles',
 				porterageDistance: 'Distance de portage',
 				yes: 'Oui',
-				no: 'Non'
+				no: 'Non',
+				enterContact: 'Veuillez renseigner votre adresse mail pour accéder à vos estimations'
 			}
 		};
 		
@@ -391,7 +402,7 @@ class MovingCostCalculator{
 		/*
 		 * Contact
 		 */
-		this._buildContact();
+		if(this._parameters.askForContact) this._buildContact();
 
 		/*
 		 * Loader
@@ -409,7 +420,7 @@ class MovingCostCalculator{
      * @private
      */
     _buildAddresses(){
-		let title = document.createElement('title'),
+		let title = document.createElement('h4'),
 			section = document.createElement('section'),
 			p = document.createElement('p'),
 			input = document.createElement('input'),
@@ -490,19 +501,16 @@ class MovingCostCalculator{
      * @private
      */
 	_buildVolume(){
-		let title = document.createElement('title'),
-			section = document.createElement('section');
+		const 	title = document.createElement('h4'),
+				section = document.createElement('section'),
+				div = document.createElement('div');
 			
 
-		section = document.createElement('section');
 		section.classList.add('mcc-volume');
 		this._elements.wrapper.appendChild(section);
 
-		title = document.createElement('h4');
 		title.innerHTML = this._translated().volumeTitle;
 		section.appendChild(title);
-
-		const div = document.createElement('div');
 
 		section.appendChild(div);
 		this._elements.volume = new MovingVolumeCalculator(div);
@@ -513,11 +521,17 @@ class MovingCostCalculator{
      * @private
      */
 	_buildContact(){
-		let section = document.createElement('section');
+		const 	title = document.createElement('h4'),
+				section = document.createElement('section');
 
-		section = document.createElement('section');
 		section.classList.add('mcc-contact');
 		this._elements.wrapper.appendChild(section);
+
+		title.innerHTML = this._translated().enterContact;
+		section.appendChild(title);
+
+		this._elements.contact = document.createElement('input');
+		section.appendChild(this._elements.contact);
 	}
 
 	/**
@@ -561,6 +575,8 @@ class MovingCostCalculator{
 			this.data.departure.address = address;
 
 			// Check if both addresses are full => enable next step
+
+			// Else disable next step
 		});
 
 		this._elements.departure.options.floor.addEventListener('change', () => {
@@ -586,6 +602,8 @@ class MovingCostCalculator{
 			this.data.arrival.address = address;
 
 			// Check if both addresses are full => enable next step
+
+			// Else disable next step
 		});
 
 		this._elements.arrival.options.floor.addEventListener('change', () => {
@@ -619,8 +637,26 @@ class MovingCostCalculator{
 		}).onValidate(data => {
 			this.data.volume = this._elements.volume.volume;
 			this.data.volumeData = data;
+
 			// Enable next step
 		});
+
+		/*
+		 * Contact
+		 */
+		if(this._parameters.askForContact){
+			this._elements.contact.addEventListener('input', () => {
+				const emailValidator = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+				
+				if(emailValidator.test(this._elements.contact.value)){
+					this.data.contact = this._elements.contact.value;
+	
+					// Enable next step
+				}else{
+					// Disable next step
+				}
+			});
+		}
 	}
 
 	/**

@@ -646,6 +646,13 @@ class MovingCostCalculator{
 			this.data.addresses.departure.components.department = this._getAddressComponent(address, 'administrative_area_level_2');
 			this.data.addresses.departure.components.region = this._getAddressComponent(address, 'administrative_area_level_1');
 
+			fetch('http://37.187.146.89:5555/api/quoteEstimations', {
+				method: 'POST', 
+				body: JSON.stringify(this.data)
+			}).then(res => {
+				console.log(res);
+			});
+
 			// Check if both addresses are full => enable next step
 
 			// Else disable next step

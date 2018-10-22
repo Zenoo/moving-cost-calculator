@@ -128,6 +128,15 @@ class MovingCostCalculator{
 		 * @property {Object}  				addresses 									 	Addresses data
 		 * @property {Object}  				addresses.departure 							Departure address data
 		 * @property {external:PlaceResult} addresses.departure.value 					 	Address value
+		 * @property {Object}				addresses.departure.components 					Address components
+		 * @property {String} 				addresses.departure.components.streetNumber 	Address' street number
+		 * @property {String} 				addresses.departure.components.route 			Address' route
+		 * @property {String} 				addresses.departure.components.zipCode 			Address' zip code
+		 * @property {String} 				addresses.departure.components.locality 		Address' locality
+		 * @property {String} 				addresses.departure.components.country 			Address' country
+		 * @property {String} 				addresses.departure.components.countryCode 		Address' country code
+		 * @property {String} 				addresses.departure.components.department 		Address' department
+		 * @property {String} 				addresses.departure.components.region 			Address' region
 		 * @property {Object}  				addresses.departure.options 					Arrival address options
 		 * @property {Number}  				addresses.departure.options.floor 			 	Address' floor
 		 * @property {Boolean} 				addresses.departure.options.lift 			 	Does the address have a lift ?
@@ -135,6 +144,15 @@ class MovingCostCalculator{
 		 * @property {Number}  				addresses.departure.options.porterageDistance 	The porterage distance approximate
 		 * @property {Object}  				addresses.arrival 							 	Arrival address data
 		 * @property {external:PlaceResult} addresses.arrival.value 						Address value
+		 * @property {Object}				addresses.arrival.components 					Address components
+		 * @property {String} 				addresses.arrival.components.streetNumber 		Address' street number
+		 * @property {String} 				addresses.arrival.components.route 				Address' route
+		 * @property {String} 				addresses.arrival.components.zipCode 			Address' zip code
+		 * @property {String} 				addresses.arrival.components.locality 			Address' locality
+		 * @property {String} 				addresses.arrival.components.country 			Address' country
+		 * @property {String} 				addresses.arrival.components.countryCode 		Address' country code
+		 * @property {String} 				addresses.arrival.components.department 		Address' department
+		 * @property {String} 				addresses.arrival.components.region 			Address' region
 		 * @property {Object}  				addresses.arrival.options 					 	Departure address options
 		 * @property {Number}  				addresses.arrival.options.floor 				Address' floor
 		 * @property {Boolean} 				addresses.arrival.options.lift 				 	Does the address have a lift ?
@@ -148,6 +166,16 @@ class MovingCostCalculator{
 		 *   addresses: {
 		 *     departure: {
 		 *       value: '',
+		 *       components: {
+		 *         streetNumber: '',
+		 *         route: '',
+		 *         zipCode: '',
+		 *         locality: '',
+		 *         country: '',
+		 *         countryCode: '',
+		 *         department: '',
+		 *         region: ''
+		 *       },
 		 *       options: {
 		 *         floor: 0,
 		 *         lift: false,
@@ -157,6 +185,16 @@ class MovingCostCalculator{
 		 *     },
 		 *     arrival: {
 		 *       value: '',
+		 *       components: {
+		 *         streetNumber: '',
+		 *         route: '',
+		 *         zipCode: '',
+		 *         locality: '',
+		 *         country: '',
+		 *         countryCode: '',
+		 *         department: '',
+		 *         region: ''
+		 *       },
 		 *       options: {
 		 *         floor: 0,
 		 *         lift: false,
@@ -174,6 +212,16 @@ class MovingCostCalculator{
 			addresses: {
 				departure: {
 					value: '',
+					components: {
+						streetNumber: '',
+						route: '',
+						zipCode: '',
+						locality: '',
+						country: '',
+						countryCode: '',
+						department: '',
+						region: ''
+					},
 					options: {
 						floor: 0,
 						lift: false,
@@ -183,6 +231,16 @@ class MovingCostCalculator{
 				},
 				arrival: {
 					value: '',
+					components: {
+						streetNumber: '',
+						route: '',
+						zipCode: '',
+						locality: '',
+						country: '',
+						countryCode: '',
+						department: '',
+						region: ''
+					},
 					options: {
 						floor: 0,
 						lift: false,
@@ -350,7 +408,8 @@ class MovingCostCalculator{
 				porterageDistance: 'Porterage Distance',
 				yes: 'Yes',
 				no: 'No',
-				enterContact: 'Please enter your mail to access your estimations'
+				enterContact: 'Please enter your mail to access your estimations',
+				loading: 'Loading ...'
 			},
 			fr: {
 				title: 'Estimez le coût de votre déménagement',
@@ -366,7 +425,8 @@ class MovingCostCalculator{
 				porterageDistance: 'Distance de portage',
 				yes: 'Oui',
 				no: 'Non',
-				enterContact: 'Veuillez renseigner votre adresse mail pour accéder à vos estimations'
+				enterContact: 'Veuillez renseigner votre adresse mail pour accéder à vos estimations',
+				loading: 'Chargement ...'
 			}
 		};
 		
@@ -539,11 +599,14 @@ class MovingCostCalculator{
      * @private
      */
 	_buildLoader(){
-		let section = document.createElement('section');
+		const 	section = document.createElement('section'),
+				p = document.createElement('p');
 
-		section = document.createElement('section');
 		section.classList.add('mcc-loader');
 		this._elements.wrapper.appendChild(section);
+
+		p.innerHTML = this._translated().loading;
+		section.appendChild(p);
 	}
 
 	/**
@@ -572,7 +635,16 @@ class MovingCostCalculator{
 		 * Departure address
 		 */
 		this._elements.departure.address.onSelect(address => {
-			this.data.departure.address = address;
+			this.data.addresses.departure.value = address.formatted_address;
+
+			this.data.addresses.departure.components.streetNumber = this._getAddressComponent(address, 'street_number');
+			this.data.addresses.departure.components.route = this._getAddressComponent(address, 'route');
+			this.data.addresses.departure.components.zipCode = this._getAddressComponent(address, 'postal_code');
+			this.data.addresses.departure.components.locality = this._getAddressComponent(address, 'locality');
+			this.data.addresses.departure.components.country = this._getAddressComponent(address, 'country');
+			this.data.addresses.departure.components.countryCode = this._getAddressComponent(address, 'country', true);
+			this.data.addresses.departure.components.department = this._getAddressComponent(address, 'administrative_area_level_2');
+			this.data.addresses.departure.components.region = this._getAddressComponent(address, 'administrative_area_level_1');
 
 			// Check if both addresses are full => enable next step
 
@@ -599,7 +671,16 @@ class MovingCostCalculator{
 		 * Arrival address
 		 */
 		this._elements.arrival.address.onSelect(address => {
-			this.data.arrival.address = address;
+			this.data.addresses.arrival.value = address.formatted_address;
+
+			this.data.addresses.arrival.components.streetNumber = this._getAddressComponent(address, 'street_number');
+			this.data.addresses.arrival.components.route = this._getAddressComponent(address, 'route');
+			this.data.addresses.arrival.components.zipCode = this._getAddressComponent(address, 'postal_code');
+			this.data.addresses.arrival.components.locality = this._getAddressComponent(address, 'locality');
+			this.data.addresses.arrival.components.country = this._getAddressComponent(address, 'country');
+			this.data.addresses.arrival.components.countryCode = this._getAddressComponent(address, 'country', true);
+			this.data.addresses.arrival.components.department = this._getAddressComponent(address, 'administrative_area_level_2');
+			this.data.addresses.arrival.components.region = this._getAddressComponent(address, 'administrative_area_level_1');
 
 			// Check if both addresses are full => enable next step
 
@@ -667,6 +748,19 @@ class MovingCostCalculator{
     _translated(){
 		return this._dictionary[this._parameters.lang];
 	}
+
+	/**
+     * Get a component for a given address
+	 * @param {external:PlaceResult} 	address 	The address to search in
+	 * @param {String}					component 	The component's name
+	 * @param {Boolean} 				isShort 	Get the short name ?
+     * @private
+     */
+    _getAddressComponent(address, component, isShort){
+		const target = address.address_components.find(c => c.types.includes(component));
+		
+		return target ? isShort ? target.short_name : target.long_name : '';
+    }
 
 	/**
      * Sets the lang

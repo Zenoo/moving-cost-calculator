@@ -761,7 +761,7 @@ class MovingCostCalculator{
 			
 			this.data.addresses.arrival.location.lat = address.geometry.location.lat();
 			this.data.addresses.arrival.location.lng = address.geometry.location.lng();
-			this.data.addresses.departure.location.placeId = address.place_id;
+			this.data.addresses.arrival.location.placeId = address.place_id;
 
 			// Enable next step if both addresses are filled
 			if(this._elements.departure.address.value.formatted_address && this._elements.arrival.address.value.formatted_address){

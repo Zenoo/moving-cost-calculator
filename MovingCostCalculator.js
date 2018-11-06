@@ -635,7 +635,9 @@ class MovingCostCalculator{
 		section.appendChild(title);
 
 		section.appendChild(div);
-		this._elements.volume = new MovingVolumeCalculator(div);
+		this._elements.volume = new MovingVolumeCalculator(div, {
+			lang: this._parameters.lang
+		});
 	}
 
 	/**

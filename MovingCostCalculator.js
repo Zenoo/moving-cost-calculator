@@ -898,15 +898,21 @@ class MovingCostCalculator{
 					console.log(response);
 
 					this._elements.wrapper.querySelector('section.mcc-estimations').innerHTML = `
+						<div style="font-family: 'Courier New', Courier, monospace">${response[0].logs.map(log => `${log}<br />`).join('')}</div>
+					`;
+
+					this._elements.wrapper.querySelector('section.mcc-estimations').innerHTML += `
 						<ul>
-							${response.map(offer => `
+							${response.map((offer, i) => `
 								<li>
 									<p>${offer.name}</p>
 									<p>(Admin) Prix: ${offer.price} €</p>
 									<p>De: ${offer.price - offer.range} €</p>
 									<p>A: ${offer.price + offer.range} €</p>
 									<p>Services:</p>
-									<p>...</p>
+									${offer.services.map(service => `
+										<p>${service}</p>
+									`).join('')}
 								</li>
 							`).join('')}
 						</ul>

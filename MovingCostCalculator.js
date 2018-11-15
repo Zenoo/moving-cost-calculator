@@ -637,6 +637,7 @@ class MovingCostCalculator{
 		section.appendChild(div);
 		this._elements.volume = new MovingVolumeCalculator(div, {
 			lang: this._parameters.lang
+			//TODO: Add custom volume calculator here
 		});
 	}
 
@@ -903,7 +904,7 @@ class MovingCostCalculator{
 
 					this._elements.wrapper.querySelector('section.mcc-estimations').innerHTML += `
 						<ul>
-							${response.map((offer, i) => `
+							${response.map(offer => `
 								<li>
 									<p>${offer.name}</p>
 									<p>(Admin) Prix: ${offer.price} €</p>

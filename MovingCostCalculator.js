@@ -1,5 +1,5 @@
 /* exported MovingCostCalculator */
-/* global AddressSearch, MovingVolumeCalculator, google */
+/* global AddressSearch, MovingVolumeCalculator, AjaxSender, google */
 
 /**
  * The AddressSearch class
@@ -59,6 +59,7 @@ class MovingCostCalculator{
      * @param {Object}           					[parameters]            				Additional optional parameters
      * @param {String}           					[parameters.lang=en]     				The lang to use
      * @param {Boolean}           					[parameters.debug=false]     			Show debugging logs ?
+     * @param {String}           					[parameters.remoteCalculator]     		URL to use for a remote calculation
      * @param {String}           					[parameters.googleAPIKey]     			Your Google API key (Only needed if the Google API script isn't imported before)
      * @param {Boolean}           					[parameters.askForContact]     			Should the calculator ask for a mail before giving the results ?
 	 * @param {MovingCostCalculator.Dictionary}   	[parameters.dictionary]  				Adds custom translations to the dictionary
@@ -83,6 +84,9 @@ class MovingCostCalculator{
 		 * @property {Element} 					arrival.options.porterageDistance 	Arrival address porterage distance element
 		 * @property {MovingVolumeCalculator} 	volume 								volume MovingVolumeCalculator
 		 * @property {Element} 					contact 							Contact element
+		 * @property {Object} 					validation 							Holder for the validation buttons
+		 * @property {Object} 					validation.addresses 				Addresses validation
+		 * @property {Object} 					validation.contact 					Contact validation
 		 * @private
 		 */
 		this._elements = {
@@ -106,7 +110,11 @@ class MovingCostCalculator{
 				}
 			},
 			volume: null,
-			contact: null
+			contact: null,
+			validation: {
+				addresses: null,
+				contact: null
+			}
 		};
 
         this._elements.wrapper = target instanceof Element ? target : document.querySelector(target);
@@ -137,6 +145,9 @@ class MovingCostCalculator{
 		 * @property {String} 				addresses.departure.components.countryCode 		Address' country code
 		 * @property {String} 				addresses.departure.components.department 		Address' department
 		 * @property {String} 				addresses.departure.components.region 			Address' region
+		 * @property {Number} 				addresses.departure.location.lat 				Address' latitude
+		 * @property {Number} 				addresses.departure.location.lng 				Address' longitude
+		 * @property {String} 				addresses.departure.location.placeId 			Address' place ID
 		 * @property {Object}  				addresses.departure.options 					Arrival address options
 		 * @property {Number}  				addresses.departure.options.floor 			 	Address' floor
 		 * @property {Boolean} 				addresses.departure.options.lift 			 	Does the address have a lift ?
@@ -153,6 +164,9 @@ class MovingCostCalculator{
 		 * @property {String} 				addresses.arrival.components.countryCode 		Address' country code
 		 * @property {String} 				addresses.arrival.components.department 		Address' department
 		 * @property {String} 				addresses.arrival.components.region 			Address' region
+		 * @property {Number} 				addresses.arrival.location.lat 					Address' latitude
+		 * @property {Number} 				addresses.arrival.location.lng 					Address' longitude
+		 * @property {String} 				addresses.arrival.location.placeId 				Address' place ID
 		 * @property {Object}  				addresses.arrival.options 					 	Departure address options
 		 * @property {Number}  				addresses.arrival.options.floor 				Address' floor
 		 * @property {Boolean} 				addresses.arrival.options.lift 				 	Does the address have a lift ?
@@ -176,11 +190,16 @@ class MovingCostCalculator{
 		 *         department: '',
 		 *         region: ''
 		 *       },
+		 *       location:{
+		 *         lat: 0,
+		 *         lng: 0,
+		 *         placeId: ''
+		 *       },
 		 *       options: {
 		 *         floor: 0,
 		 *         lift: false,
 		 *         furnitureLift: false,
-		 *         porterageDistance: 5
+		 *         porterageDistance: 0
 		 *       }
 		 *     },
 		 *     arrival: {
@@ -195,11 +214,16 @@ class MovingCostCalculator{
 		 *         department: '',
 		 *         region: ''
 		 *       },
+		 *       location:{
+		 *         lat: 0,
+		 *         lng: 0
+		 *         placeId: ''
+		 *       },
 		 *       options: {
 		 *         floor: 0,
 		 *         lift: false,
 		 *         furnitureLift: false,
-		 *         porterageDistance: 5
+		 *         porterageDistance: 0
 		 *       }
 		 *     }
 		 *   },
@@ -222,11 +246,16 @@ class MovingCostCalculator{
 						department: '',
 						region: ''
 					},
+					location: {
+						lat: 0,
+						lng: 0,
+						placeId: ''
+					},
 					options: {
 						floor: 0,
 						lift: false,
 						furnitureLift: false,
-						porterageDistance: 5
+						porterageDistance: 0
 					}
 				},
 				arrival: {
@@ -241,11 +270,16 @@ class MovingCostCalculator{
 						department: '',
 						region: ''
 					},
+					location: {
+						lat: 0,
+						lng: 0,
+						placeId: ''
+					},
 					options: {
 						floor: 0,
 						lift: false,
 						furnitureLift: false,
-						porterageDistance: 5
+						porterageDistance: 0
 					}
 				}
 			},
@@ -355,7 +389,25 @@ class MovingCostCalculator{
 			}
 		});
 
-		return Promise.all([movingVolumeCalculatorDependency, googleMapsAPIDependency, addressSearchDependency]);
+		// AjaxSender
+		const ajaxSenderDependency = new Promise(solve => {
+			if(typeof AjaxSender == 'function'){
+				solve();
+			}else{
+				const ajaxSenderScript = new Promise(resolve => {
+					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/ajax-sender/1d834e01a9ffa3965d4a6adb2eade9f3d084e517/AjaxSender.min.js', () => {
+						if(this._parameters.debug) console.log('DEPENDENCIES: AjaxSender script LOADED !');
+						resolve();
+					});
+				});
+
+				ajaxSenderScript.then(() => {
+					solve();
+				});
+			}
+		});
+
+		return Promise.all([movingVolumeCalculatorDependency, googleMapsAPIDependency, addressSearchDependency, ajaxSenderDependency]);
 	}
 
 	/**
@@ -409,7 +461,8 @@ class MovingCostCalculator{
 				yes: 'Yes',
 				no: 'No',
 				enterContact: 'Please enter your mail to access your estimations',
-				loading: 'Loading ...'
+				loading: 'Loading ...',
+				next: 'Next'
 			},
 			fr: {
 				title: 'Estimez le coût de votre déménagement',
@@ -426,12 +479,15 @@ class MovingCostCalculator{
 				yes: 'Oui',
 				no: 'Non',
 				enterContact: 'Veuillez renseigner votre adresse mail pour accéder à vos estimations',
-				loading: 'Chargement ...'
+				loading: 'Chargement ...',
+				next: 'Suivant'
 			}
 		};
 		
 		// Add custom translations
 		this._dictionary = Object.assign(this._dictionary, this._parameters.dictionary || {});
+
+		console.log(this._dictionary);
 	}
 	
 	/**
@@ -487,7 +543,7 @@ class MovingCostCalculator{
 			div = document.createElement('div');
 
 		section = document.createElement('section');
-		section.classList.add('mcc-addresses');
+		section.classList.add('mcc-addresses', 'mcc-active');
 		this._elements.wrapper.appendChild(section);
 
 		title = document.createElement('h4');
@@ -518,6 +574,14 @@ class MovingCostCalculator{
 		div.classList.add('mcc-address-options');
 		section.appendChild(div);
 		this._buildAddressOptions(this._elements.arrival.options, div);
+
+		// Validation
+		p = document.createElement('p');
+		this._elements.validation.addresses = document.createElement('button');
+		this._elements.validation.addresses.disabled = true;
+		this._elements.validation.addresses.innerHTML = this._translated().next;
+		p.appendChild(this._elements.validation.addresses);
+		section.appendChild(p);
 	}
 
 	/**
@@ -573,7 +637,10 @@ class MovingCostCalculator{
 		section.appendChild(title);
 
 		section.appendChild(div);
-		this._elements.volume = new MovingVolumeCalculator(div);
+		this._elements.volume = new MovingVolumeCalculator(div, {
+			lang: this._parameters.lang
+			//TODO: Add custom volume calculator here
+		});
 	}
 
 	/**
@@ -582,7 +649,8 @@ class MovingCostCalculator{
      */
 	_buildContact(){
 		const 	title = document.createElement('h4'),
-				section = document.createElement('section');
+				section = document.createElement('section'),
+				p = document.createElement('p');
 
 		section.classList.add('mcc-contact');
 		this._elements.wrapper.appendChild(section);
@@ -592,6 +660,13 @@ class MovingCostCalculator{
 
 		this._elements.contact = document.createElement('input');
 		section.appendChild(this._elements.contact);
+
+		// Validation
+		this._elements.validation.contact = document.createElement('button');
+		this._elements.validation.contact.disabled = true;
+		this._elements.validation.contact.innerHTML = this._translated().next;
+		p.appendChild(this._elements.validation.contact);
+		section.appendChild(p);
 	}
 
 	/**
@@ -646,16 +721,16 @@ class MovingCostCalculator{
 			this.data.addresses.departure.components.department = this._getAddressComponent(address, 'administrative_area_level_2');
 			this.data.addresses.departure.components.region = this._getAddressComponent(address, 'administrative_area_level_1');
 
-			fetch('http://37.187.146.89:5555/api/quoteEstimations', {
-				method: 'POST', 
-				body: JSON.stringify(this.data)
-			}).then(res => {
-				console.log(res);
-			});
+			this.data.addresses.departure.location.lat = address.geometry.location.lat();
+			this.data.addresses.departure.location.lng = address.geometry.location.lng();
+			this.data.addresses.departure.location.placeId = address.place_id;
 
-			// Check if both addresses are full => enable next step
-
-			// Else disable next step
+			// Enable next step if both addresses are filled
+			if(this._elements.departure.address.value.formatted_address && this._elements.arrival.address.value.formatted_address){
+				this._elements.validation.addresses.disabled = false;
+			}else{
+				this._elements.validation.addresses.disabled = true;
+			}
 		});
 
 		this._elements.departure.options.floor.addEventListener('change', () => {
@@ -688,10 +763,17 @@ class MovingCostCalculator{
 			this.data.addresses.arrival.components.countryCode = this._getAddressComponent(address, 'country', true);
 			this.data.addresses.arrival.components.department = this._getAddressComponent(address, 'administrative_area_level_2');
 			this.data.addresses.arrival.components.region = this._getAddressComponent(address, 'administrative_area_level_1');
+			
+			this.data.addresses.arrival.location.lat = address.geometry.location.lat();
+			this.data.addresses.arrival.location.lng = address.geometry.location.lng();
+			this.data.addresses.arrival.location.placeId = address.place_id;
 
-			// Check if both addresses are full => enable next step
-
-			// Else disable next step
+			// Enable next step if both addresses are filled
+			if(this._elements.departure.address.value.formatted_address && this._elements.arrival.address.value.formatted_address){
+				this._elements.validation.addresses.disabled = false;
+			}else{
+				this._elements.validation.addresses.disabled = true;
+			}
 		});
 
 		this._elements.arrival.options.floor.addEventListener('change', () => {
@@ -710,6 +792,14 @@ class MovingCostCalculator{
 			this.data.addresses.arrival.options.porterageDistance = +this._elements.arrival.options.porterageDistance.value;
 		});
 
+		/**
+		 * Addresses validation
+		 */
+		this._elements.validation.addresses.addEventListener('click', () => {
+			this._elements.wrapper.querySelector('section.mcc-volume').classList.add('mcc-active');
+			this._elements.wrapper.querySelector('section.mcc-addresses').classList.remove('mcc-active');
+		});
+
 		/*
 		 * Volume
 		 */
@@ -717,16 +807,22 @@ class MovingCostCalculator{
 			if(this._elements.volume.isValid()){
 				this.data.volume = value;
 				this.data.volumeData = this._elements.volume.data;
-
-				// Enable next step
-			}else{
-				// Disable next step
 			}
 		}).onValidate(data => {
 			this.data.volume = this._elements.volume.volume;
 			this.data.volumeData = data;
 
-			// Enable next step
+			// Go to next step
+			if(this._parameters.askForContact){
+				this._elements.wrapper.querySelector('section.mcc-contact').classList.add('mcc-active');
+				this._elements.wrapper.querySelector('section.mcc-volume').classList.remove('mcc-active');
+			}else{
+				this._elements.wrapper.querySelector('section.mcc-loader').classList.add('mcc-active');
+				this._elements.wrapper.querySelector('section.mcc-volume').classList.remove('mcc-active');
+
+				this.validate();
+			}
+			
 		});
 
 		/*
@@ -740,9 +836,21 @@ class MovingCostCalculator{
 					this.data.contact = this._elements.contact.value;
 	
 					// Enable next step
+					this._elements.validation.contact.disabled = false;
 				}else{
 					// Disable next step
+					this._elements.validation.contact.disabled = true;
 				}
+			});
+
+			/**
+			 * Contact validation
+			 */
+			this._elements.validation.contact.addEventListener('click', () => {
+				this._elements.wrapper.querySelector('section.mcc-loader').classList.add('mcc-active');
+				this._elements.wrapper.querySelector('section.mcc-contact').classList.remove('mcc-active');
+
+				this.validate();
 			});
 		}
 	}
@@ -776,6 +884,56 @@ class MovingCostCalculator{
      */
     setLang(lang){
 		this._parameters.lang = lang || 'en';
+
+		return this;
+	}
+
+	/**
+	 * Validates the calculator data & calculates the estimations
+	 * @returns {MovingCostCalculator} The current MovingCostCalculator
+	 */
+	validate(){
+		if(this._parameters.remoteCalculator){
+			new AjaxSender(this._parameters.remoteCalculator, {
+				data: this.data,
+				method: 'POST',
+				load: response => {
+					console.log(response);
+
+					this._elements.wrapper.querySelector('section.mcc-estimations').innerHTML = `
+						<div style="font-family: 'Courier New', Courier, monospace">${response[0].logs.map(log => `${log}<br />`).join('')}</div>
+					`;
+
+					this._elements.wrapper.querySelector('section.mcc-estimations').innerHTML += `
+						<ul>
+							${response.map(offer => `
+								<li>
+									<p>${offer.name}</p>
+									<p>(Admin) Prix: ${offer.price} €</p>
+									<p>De: ${offer.price - offer.range} €</p>
+									<p>A: ${offer.price + offer.range} €</p>
+									<p>Services:</p>
+									${offer.services.map(service => `
+										<p>${service}</p>
+									`).join('')}
+								</li>
+							`).join('')}
+						</ul>
+					`;
+
+					// Do stuff with the estimations here
+					this._elements.wrapper.querySelector('section.mcc-loader').classList.remove('mcc-active');
+					this._elements.wrapper.querySelector('section.mcc-estimations').classList.add('mcc-active');
+				},
+				error: error => {
+					console.log(error);
+				}
+			});
+		}else{
+			// Calculate data locally here
+			this._elements.wrapper.querySelector('section.mcc-loader').classList.remove('mcc-active');
+			this._elements.wrapper.querySelector('section.mcc-estimations').classList.add('mcc-active');
+		}
 
 		return this;
 	}

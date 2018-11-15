@@ -486,8 +486,6 @@ class MovingCostCalculator{
 		
 		// Add custom translations
 		this._dictionary = Object.assign(this._dictionary, this._parameters.dictionary || {});
-
-		console.log(this._dictionary);
 	}
 	
 	/**

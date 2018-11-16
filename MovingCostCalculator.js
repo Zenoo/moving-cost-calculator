@@ -55,14 +55,19 @@ class MovingCostCalculator{
 	/**
      * Creates an instance of MovingCostCalculator
      * and checks for invalid parameters
-	 * @param {(Element|String)} 					target                   				The wrapper for the MovingCostCalculator module
-     * @param {Object}           					[parameters]            				Additional optional parameters
-     * @param {String}           					[parameters.lang=en]     				The lang to use
-     * @param {Boolean}           					[parameters.debug=false]     			Show debugging logs ?
-     * @param {String}           					[parameters.remoteCalculator]     		URL to use for a remote calculation
-     * @param {String}           					[parameters.googleAPIKey]     			Your Google API key (Only needed if the Google API script isn't imported before)
-     * @param {Boolean}           					[parameters.askForContact]     			Should the calculator ask for a mail before giving the results ?
-	 * @param {MovingCostCalculator.Dictionary}   	[parameters.dictionary]  				Adds custom translations to the dictionary
+	 * @param {(Element|String)} 					target                   					The wrapper for the MovingCostCalculator module
+     * @param {Object}           					[parameters]            					Additional optional parameters
+     * @param {String}           					[parameters.lang=en]     					The lang to use
+     * @param {Boolean}           					[parameters.debug=false]     				Show debugging logs ?
+     * @param {String}           					[parameters.remoteCalculator]     			URL to use for a remote calculation
+     * @param {String}           					[parameters.googleAPIKey]     				Your Google API key (Only needed if the Google API script isn't imported before)
+     * @param {Boolean}           					[parameters.askForContact]     				Should the calculator ask for a mail before giving the results ?
+	 * @param {MovingCostCalculator.Dictionary}   	[parameters.dictionary]  					Adds custom translations to the dictionary
+	 * @param {Object}   							[parameters.options]  						Options to enable/disable
+	 * @param {Boolean}   							[parameters.options.floor=true]  			Ask for floor ?
+	 * @param {Boolean}   							[parameters.options.lift=true]  			Ask for lift ?
+	 * @param {Boolean}   							[parameters.options.porterageDistance=true] Ask for porterage distance ?
+	 * @param {MovingVolumeCalculator.Rooms}   		[parameters.options.rooms]  				Custom rooms
      */
     constructor(target, parameters){
 		/**
@@ -70,17 +75,17 @@ class MovingCostCalculator{
 		 * @property {Element} 					wrapper 							The highest module element
 		 * @property {Object} 					departure 							Holder for the departure elements
 		 * @property {AddressSearch} 			departure.address 					Departure address AddressSearch
+		 * @property {Element} 					departure.optionToggler 			Departure address options toggler element
 		 * @property {Object} 					departure.options 					Departure address options holder
 		 * @property {Element} 					departure.options.floor	 			Departure address floor element
 		 * @property {Element} 					departure.options.lift 				Departure address lift element
-		 * @property {Element} 					departure.options.furnitureLift 	Departure address furniture lift element
 		 * @property {Element} 					departure.options.porterageDistance Departure address porterage distance element
 		 * @property {Object} 					arrival 							Holder for the arrival elements
 		 * @property {AddressSearch} 			arrival.address 					Arrival address AddressSearch
+		 * @property {Element} 					arrival.optionToggler 				Arrival address options toggler element
 		 * @property {Object} 					arrival.options 					Arrival address options holder
 		 * @property {Element} 					arrival.options.floor 				Arrival address floor element
 		 * @property {Element} 					arrival.options.lift 				Arrival address lift element
-		 * @property {Element} 					arrival.options.furnitureLift 		Arrival address furniture lift element
 		 * @property {Element} 					arrival.options.porterageDistance 	Arrival address porterage distance element
 		 * @property {MovingVolumeCalculator} 	volume 								volume MovingVolumeCalculator
 		 * @property {Element} 					contact 							Contact element
@@ -93,19 +98,19 @@ class MovingCostCalculator{
 			wrapper: null,
 			departure: {
 				address: null,
+				optionToggler: null,
 				options: {
 					floor: null,
 					lift: null,
-					furnitureLift: null,
 					porterageDistance: null
 				}
 			},
 			arrival: {
 				address: null,
+				optionToggler: null,
 				options: {
 					floor: null,
 					lift: null,
-					furnitureLift: null,
 					porterageDistance: null
 				}
 			},
@@ -128,7 +133,13 @@ class MovingCostCalculator{
 			lang: 'en',
 			debug: false,
 			askForContact: true,
-			...parameters
+			...parameters,
+			options: {
+				floor: true,
+				lift: true,
+				porterageDistance: true,
+				...parameters.options
+			}
 		};
 
 		/**
@@ -151,7 +162,6 @@ class MovingCostCalculator{
 		 * @property {Object}  				addresses.departure.options 					Arrival address options
 		 * @property {Number}  				addresses.departure.options.floor 			 	Address' floor
 		 * @property {Boolean} 				addresses.departure.options.lift 			 	Does the address have a lift ?
-		 * @property {Boolean} 				addresses.departure.options.furnitureLift 	 	Does the address require a furniture lift ?
 		 * @property {Number}  				addresses.departure.options.porterageDistance 	The porterage distance approximate
 		 * @property {Object}  				addresses.arrival 							 	Arrival address data
 		 * @property {external:PlaceResult} addresses.arrival.value 						Address value
@@ -170,7 +180,6 @@ class MovingCostCalculator{
 		 * @property {Object}  				addresses.arrival.options 					 	Departure address options
 		 * @property {Number}  				addresses.arrival.options.floor 				Address' floor
 		 * @property {Boolean} 				addresses.arrival.options.lift 				 	Does the address have a lift ?
-		 * @property {Boolean} 				addresses.arrival.options.furnitureLift 		Does the address require a furniture lift ?
 		 * @property {Number}  				addresses.arrival.options.porterageDistance 	The porterage distance approximate
 		 * @property {Number}  				volume											The volume
 		 * @property {Number}  				volumeData										The additional volume data
@@ -198,7 +207,6 @@ class MovingCostCalculator{
 		 *       options: {
 		 *         floor: 0,
 		 *         lift: false,
-		 *         furnitureLift: false,
 		 *         porterageDistance: 0
 		 *       }
 		 *     },
@@ -222,7 +230,6 @@ class MovingCostCalculator{
 		 *       options: {
 		 *         floor: 0,
 		 *         lift: false,
-		 *         furnitureLift: false,
 		 *         porterageDistance: 0
 		 *       }
 		 *     }
@@ -254,7 +261,6 @@ class MovingCostCalculator{
 					options: {
 						floor: 0,
 						lift: false,
-						furnitureLift: false,
 						porterageDistance: 0
 					}
 				},
@@ -278,7 +284,6 @@ class MovingCostCalculator{
 					options: {
 						floor: 0,
 						lift: false,
-						furnitureLift: false,
 						porterageDistance: 0
 					}
 				}
@@ -454,9 +459,9 @@ class MovingCostCalculator{
 				departureAddress: 'Departure address',
 				arrivalAddress: 'Arrival address',
 				moreAddressOptions: 'More options',
+				lessAddressOptions: 'Less options',
 				floor: 'Floor',
 				lift: 'Lift',
-				furnitureLift: 'Furniture Lift',
 				porterageDistance: 'Porterage Distance',
 				yes: 'Yes',
 				no: 'No',
@@ -472,9 +477,9 @@ class MovingCostCalculator{
 				departureAddress: 'Adresse de départ',
 				arrivalAddress: 'Adresse d\'arrivée',
 				moreAddressOptions: 'Plus d\'options',
+				lessAddressOptions: 'Moins d\'options',
 				floor: 'Etage',
 				lift: 'Ascenseur',
-				furnitureLift: 'Monte-meubles',
 				porterageDistance: 'Distance de portage',
 				yes: 'Oui',
 				no: 'Non',
@@ -541,7 +546,7 @@ class MovingCostCalculator{
 			div = document.createElement('div');
 
 		section = document.createElement('section');
-		section.classList.add('mcc-addresses', 'mcc-active');
+		section.classList.add('mcc-addresses');
 		this._elements.wrapper.appendChild(section);
 
 		title = document.createElement('h4');
@@ -555,10 +560,24 @@ class MovingCostCalculator{
 		section.appendChild(input);
 		this._elements.departure.address = new AddressSearch(input);
 
-		div.classList.add('mcc-address-options');
-		section.appendChild(div);
-		this._buildAddressOptions(this._elements.departure.options, div);
-
+		// Departure options toggler
+		if(Object.values(this._parameters.options).some(option => option == true)){
+			p = document.createElement('p');
+			p.classList.add('mcc-address-options-toggler');
+			section.appendChild(p);
+	
+			this._elements.departure.optionToggler = document.createElement('a');
+			this._elements.departure.optionToggler.classList.add('mcc-address-options-enable');
+			this._elements.departure.optionToggler.innerText = this._translated().moreAddressOptions;
+			this._elements.departure.optionToggler.href = '';
+			p.appendChild(this._elements.departure.optionToggler);
+	
+			// Departure options
+			div.classList.add('mcc-address-options', 'mcc-departure', 'mcc-hidden');
+			section.appendChild(div);
+			this._buildAddressOptions(this._elements.departure.options, div);
+		}
+		
 		// Arrival
 		p = document.createElement('p');
 		p.innerText = this._translated().arrivalAddress;
@@ -568,10 +587,25 @@ class MovingCostCalculator{
 		section.appendChild(input);
 		this._elements.arrival.address = new AddressSearch(input);
 
-		div = document.createElement('div');
-		div.classList.add('mcc-address-options');
-		section.appendChild(div);
-		this._buildAddressOptions(this._elements.arrival.options, div);
+		// Arrival options toggler
+		if(Object.values(this._parameters.options).some(option => option == true)){
+			p = document.createElement('p');
+			p.classList.add('mcc-address-options-toggler');
+			section.appendChild(p);
+	
+			this._elements.arrival.optionToggler = document.createElement('a');
+			this._elements.arrival.optionToggler.classList.add('mcc-address-options-enable');
+			this._elements.arrival.optionToggler.innerText = this._translated().moreAddressOptions;
+			this._elements.arrival.optionToggler.href = '';
+			p.appendChild(this._elements.arrival.optionToggler);
+	
+			// Arrival options
+			div = document.createElement('div');
+			div.classList.add('mcc-address-options', 'mcc-arrival', 'mcc-hidden');
+			section.appendChild(div);
+			this._buildAddressOptions(this._elements.arrival.options, div);
+		}
+		
 
 		// Validation
 		p = document.createElement('p');
@@ -590,31 +624,33 @@ class MovingCostCalculator{
      */
 	_buildAddressOptions(options, holder){
 		Object.keys(options).forEach(option => {
-			const p = document.createElement('p'),
+			if(this._parameters.options[option]){
+				const p = document.createElement('p'),
 				span = document.createElement('span');
 
-			if(['lift', 'furnitureLift'].includes(option)){
-				options[option] = document.createElement('select');
+				if(['lift'].includes(option)){
+					options[option] = document.createElement('select');
 
-				let optionTag = document.createElement('option');
+					let optionTag = document.createElement('option');
 
-				optionTag.value = 'false';
-				optionTag.innerText = this._translated().no;
-				options[option].appendChild(optionTag);
+					optionTag.value = 'false';
+					optionTag.innerText = this._translated().no;
+					options[option].appendChild(optionTag);
 
-				optionTag = document.createElement('option');
-				optionTag.value = 'true';
-				optionTag.innerText = this._translated().yes;
-				options[option].appendChild(optionTag);
-			}else{
-				options[option] = document.createElement('input');
+					optionTag = document.createElement('option');
+					optionTag.value = 'true';
+					optionTag.innerText = this._translated().yes;
+					options[option].appendChild(optionTag);
+				}else{
+					options[option] = document.createElement('input');
+				}
+
+				span.innerText = this._translated()[option];
+				
+				p.appendChild(span);
+				p.appendChild(options[option]);
+				holder.appendChild(p);
 			}
-
-			span.innerText = this._translated()[option];
-			
-			p.appendChild(span);
-			p.appendChild(options[option]);
-			holder.appendChild(p);
 		});
 	}
 
@@ -628,7 +664,7 @@ class MovingCostCalculator{
 				div = document.createElement('div');
 			
 
-		section.classList.add('mcc-volume');
+		section.classList.add('mcc-volume', 'mcc-hidden');
 		this._elements.wrapper.appendChild(section);
 
 		title.innerHTML = this._translated().volumeTitle;
@@ -636,8 +672,8 @@ class MovingCostCalculator{
 
 		section.appendChild(div);
 		this._elements.volume = new MovingVolumeCalculator(div, {
-			lang: this._parameters.lang
-			//TODO: Add custom volume calculator here
+			lang: this._parameters.lang,
+			rooms: this._parameters.options.rooms
 		});
 	}
 
@@ -646,25 +682,27 @@ class MovingCostCalculator{
      * @private
      */
 	_buildContact(){
-		const 	title = document.createElement('h4'),
-				section = document.createElement('section'),
-				p = document.createElement('p');
+		if(this._parameters.askForContact){
+			const 	title = document.createElement('h4'),
+					section = document.createElement('section'),
+					p = document.createElement('p');
 
-		section.classList.add('mcc-contact');
-		this._elements.wrapper.appendChild(section);
+			section.classList.add('mcc-contact', 'mcc-hidden');
+			this._elements.wrapper.appendChild(section);
 
-		title.innerHTML = this._translated().enterContact;
-		section.appendChild(title);
+			title.innerHTML = this._translated().enterContact;
+			section.appendChild(title);
 
-		this._elements.contact = document.createElement('input');
-		section.appendChild(this._elements.contact);
+			this._elements.contact = document.createElement('input');
+			section.appendChild(this._elements.contact);
 
-		// Validation
-		this._elements.validation.contact = document.createElement('button');
-		this._elements.validation.contact.disabled = true;
-		this._elements.validation.contact.innerHTML = this._translated().next;
-		p.appendChild(this._elements.validation.contact);
-		section.appendChild(p);
+			// Validation
+			this._elements.validation.contact = document.createElement('button');
+			this._elements.validation.contact.disabled = true;
+			this._elements.validation.contact.innerHTML = this._translated().next;
+			p.appendChild(this._elements.validation.contact);
+			section.appendChild(p);
+		}
 	}
 
 	/**
@@ -675,7 +713,7 @@ class MovingCostCalculator{
 		const 	section = document.createElement('section'),
 				p = document.createElement('p');
 
-		section.classList.add('mcc-loader');
+		section.classList.add('mcc-loader', 'mcc-hidden');
 		this._elements.wrapper.appendChild(section);
 
 		p.innerHTML = this._translated().loading;
@@ -691,7 +729,7 @@ class MovingCostCalculator{
 			section = document.createElement('section');
 
 		section = document.createElement('section');
-		section.classList.add('mcc-estimations');
+		section.classList.add('mcc-estimations', 'mcc-hidden');
 		this._elements.wrapper.appendChild(section);
 
 		title = document.createElement('h4');
@@ -707,95 +745,19 @@ class MovingCostCalculator{
 		/*
 		 * Departure address
 		 */
-		this._elements.departure.address.onSelect(address => {
-			this.data.addresses.departure.value = address.formatted_address;
-
-			this.data.addresses.departure.components.streetNumber = this._getAddressComponent(address, 'street_number');
-			this.data.addresses.departure.components.route = this._getAddressComponent(address, 'route');
-			this.data.addresses.departure.components.zipCode = this._getAddressComponent(address, 'postal_code');
-			this.data.addresses.departure.components.locality = this._getAddressComponent(address, 'locality');
-			this.data.addresses.departure.components.country = this._getAddressComponent(address, 'country');
-			this.data.addresses.departure.components.countryCode = this._getAddressComponent(address, 'country', true);
-			this.data.addresses.departure.components.department = this._getAddressComponent(address, 'administrative_area_level_2');
-			this.data.addresses.departure.components.region = this._getAddressComponent(address, 'administrative_area_level_1');
-
-			this.data.addresses.departure.location.lat = address.geometry.location.lat();
-			this.data.addresses.departure.location.lng = address.geometry.location.lng();
-			this.data.addresses.departure.location.placeId = address.place_id;
-
-			// Enable next step if both addresses are filled
-			if(this._elements.departure.address.value.formatted_address && this._elements.arrival.address.value.formatted_address){
-				this._elements.validation.addresses.disabled = false;
-			}else{
-				this._elements.validation.addresses.disabled = true;
-			}
-		});
-
-		this._elements.departure.options.floor.addEventListener('change', () => {
-			this.data.addresses.departure.options.floor = +this._elements.departure.options.floor.value;
-		});
-
-		this._elements.departure.options.lift.addEventListener('change', () => {
-			this.data.addresses.departure.options.lift = this._elements.departure.options.lift.value == 'true';
-		});
-
-		this._elements.departure.options.furnitureLift.addEventListener('change', () => {
-			this.data.addresses.departure.options.furnitureLift = this._elements.departure.options.furnitureLift.value == 'true';
-		});
-		
-		this._elements.departure.options.porterageDistance.addEventListener('change', () => {
-			this.data.addresses.departure.options.porterageDistance = +this._elements.departure.options.porterageDistance.value;
-		});
+		this._createDepartureAddressListeners();
 
 		/*
 		 * Arrival address
 		 */
-		this._elements.arrival.address.onSelect(address => {
-			this.data.addresses.arrival.value = address.formatted_address;
-
-			this.data.addresses.arrival.components.streetNumber = this._getAddressComponent(address, 'street_number');
-			this.data.addresses.arrival.components.route = this._getAddressComponent(address, 'route');
-			this.data.addresses.arrival.components.zipCode = this._getAddressComponent(address, 'postal_code');
-			this.data.addresses.arrival.components.locality = this._getAddressComponent(address, 'locality');
-			this.data.addresses.arrival.components.country = this._getAddressComponent(address, 'country');
-			this.data.addresses.arrival.components.countryCode = this._getAddressComponent(address, 'country', true);
-			this.data.addresses.arrival.components.department = this._getAddressComponent(address, 'administrative_area_level_2');
-			this.data.addresses.arrival.components.region = this._getAddressComponent(address, 'administrative_area_level_1');
-			
-			this.data.addresses.arrival.location.lat = address.geometry.location.lat();
-			this.data.addresses.arrival.location.lng = address.geometry.location.lng();
-			this.data.addresses.arrival.location.placeId = address.place_id;
-
-			// Enable next step if both addresses are filled
-			if(this._elements.departure.address.value.formatted_address && this._elements.arrival.address.value.formatted_address){
-				this._elements.validation.addresses.disabled = false;
-			}else{
-				this._elements.validation.addresses.disabled = true;
-			}
-		});
-
-		this._elements.arrival.options.floor.addEventListener('change', () => {
-			this.data.addresses.arrival.options.floor = +this._elements.arrival.options.floor.value;
-		});
-
-		this._elements.arrival.options.lift.addEventListener('change', () => {
-			this.data.addresses.arrival.options.lift = this._elements.arrival.options.lift.value == 'true';
-		});
-
-		this._elements.arrival.options.furnitureLift.addEventListener('change', () => {
-			this.data.addresses.arrival.options.furnitureLift = this._elements.arrival.options.furnitureLift.value == 'true';
-		});
-		
-		this._elements.arrival.options.porterageDistance.addEventListener('change', () => {
-			this.data.addresses.arrival.options.porterageDistance = +this._elements.arrival.options.porterageDistance.value;
-		});
+		this._createArrivalAddressListeners();
 
 		/**
 		 * Addresses validation
 		 */
 		this._elements.validation.addresses.addEventListener('click', () => {
-			this._elements.wrapper.querySelector('section.mcc-volume').classList.add('mcc-active');
-			this._elements.wrapper.querySelector('section.mcc-addresses').classList.remove('mcc-active');
+			this._elements.wrapper.querySelector('section.mcc-volume').classList.remove('mcc-hidden');
+			this._elements.wrapper.querySelector('section.mcc-addresses').classList.add('mcc-hidden');
 		});
 
 		/*
@@ -812,11 +774,11 @@ class MovingCostCalculator{
 
 			// Go to next step
 			if(this._parameters.askForContact){
-				this._elements.wrapper.querySelector('section.mcc-contact').classList.add('mcc-active');
-				this._elements.wrapper.querySelector('section.mcc-volume').classList.remove('mcc-active');
+				this._elements.wrapper.querySelector('section.mcc-contact').classList.remove('mcc-hidden');
+				this._elements.wrapper.querySelector('section.mcc-volume').classList.add('mcc-hidden');
 			}else{
-				this._elements.wrapper.querySelector('section.mcc-loader').classList.add('mcc-active');
-				this._elements.wrapper.querySelector('section.mcc-volume').classList.remove('mcc-active');
+				this._elements.wrapper.querySelector('section.mcc-loader').classList.remove('mcc-hidden');
+				this._elements.wrapper.querySelector('section.mcc-volume').classList.add('mcc-hidden');
 
 				this.validate();
 			}
@@ -845,11 +807,153 @@ class MovingCostCalculator{
 			 * Contact validation
 			 */
 			this._elements.validation.contact.addEventListener('click', () => {
-				this._elements.wrapper.querySelector('section.mcc-loader').classList.add('mcc-active');
-				this._elements.wrapper.querySelector('section.mcc-contact').classList.remove('mcc-active');
+				this._elements.wrapper.querySelector('section.mcc-loader').classList.remove('mcc-hidden');
+				this._elements.wrapper.querySelector('section.mcc-contact').classList.add('mcc-hidden');
 
 				this.validate();
 			});
+		}
+	}
+
+	/**
+	 * Creates the departure address' listeners
+	 * @private
+	 */
+	_createDepartureAddressListeners(){
+		// Address
+		this._elements.departure.address.onSelect(address => {
+			this.data.addresses.departure.value = address.formatted_address;
+
+			this.data.addresses.departure.components.streetNumber = this._getAddressComponent(address, 'street_number');
+			this.data.addresses.departure.components.route = this._getAddressComponent(address, 'route');
+			this.data.addresses.departure.components.zipCode = this._getAddressComponent(address, 'postal_code');
+			this.data.addresses.departure.components.locality = this._getAddressComponent(address, 'locality');
+			this.data.addresses.departure.components.country = this._getAddressComponent(address, 'country');
+			this.data.addresses.departure.components.countryCode = this._getAddressComponent(address, 'country', true);
+			this.data.addresses.departure.components.department = this._getAddressComponent(address, 'administrative_area_level_2');
+			this.data.addresses.departure.components.region = this._getAddressComponent(address, 'administrative_area_level_1');
+
+			this.data.addresses.departure.location.lat = address.geometry.location.lat();
+			this.data.addresses.departure.location.lng = address.geometry.location.lng();
+			this.data.addresses.departure.location.placeId = address.place_id;
+
+			// Enable next step if both addresses are filled
+			if(this._elements.departure.address.value.formatted_address && this._elements.arrival.address.value.formatted_address){
+				this._elements.validation.addresses.disabled = false;
+			}else{
+				this._elements.validation.addresses.disabled = true;
+			}
+		});
+
+		// Address options toggler
+		if(Object.values(this._parameters.options).some(option => option == true)){
+			this._elements.departure.optionToggler.addEventListener('click', e => {
+				e.preventDefault();
+				
+				if(this._elements.departure.optionToggler.classList.contains('mcc-address-options-enable')){
+					this._elements.departure.optionToggler.classList.remove('mcc-address-options-enable');
+					this._elements.departure.optionToggler.classList.add('mcc-address-options-disable');
+					this._elements.departure.optionToggler.innerText = this._translated().lessAddressOptions;
+	
+					this._elements.wrapper.querySelector('.mcc-departure.mcc-address-options').classList.remove('mcc-hidden');
+				}else{
+					this._elements.departure.optionToggler.classList.remove('mcc-address-options-disable');
+					this._elements.departure.optionToggler.classList.add('mcc-address-options-enable');
+					this._elements.departure.optionToggler.innerText = this._translated().moreAddressOptions;
+	
+					this._elements.wrapper.querySelector('.mcc-departure.mcc-address-options').classList.add('mcc-hidden');
+				}
+			});
+	
+			// Address options
+			if(this._parameters.options.floor){
+				this._elements.departure.options.floor.addEventListener('change', () => {
+					this.data.addresses.departure.options.floor = +this._elements.departure.options.floor.value;
+				});
+			}
+	
+			if(this._parameters.options.lift){
+				this._elements.departure.options.lift.addEventListener('change', () => {
+					this.data.addresses.departure.options.lift = this._elements.departure.options.lift.value == 'true';
+				});
+			}
+			
+			if(this._parameters.options.porterageDistance){
+				this._elements.departure.options.porterageDistance.addEventListener('change', () => {
+					this.data.addresses.departure.options.porterageDistance = +this._elements.departure.options.porterageDistance.value;
+				});
+			}
+		}
+	}
+
+	/**
+	 * Creates the arrival address' listeners
+	 * @private
+	 */
+	_createArrivalAddressListeners(){
+		this._elements.arrival.address.onSelect(address => {
+			// Address
+			this.data.addresses.arrival.value = address.formatted_address;
+
+			this.data.addresses.arrival.components.streetNumber = this._getAddressComponent(address, 'street_number');
+			this.data.addresses.arrival.components.route = this._getAddressComponent(address, 'route');
+			this.data.addresses.arrival.components.zipCode = this._getAddressComponent(address, 'postal_code');
+			this.data.addresses.arrival.components.locality = this._getAddressComponent(address, 'locality');
+			this.data.addresses.arrival.components.country = this._getAddressComponent(address, 'country');
+			this.data.addresses.arrival.components.countryCode = this._getAddressComponent(address, 'country', true);
+			this.data.addresses.arrival.components.department = this._getAddressComponent(address, 'administrative_area_level_2');
+			this.data.addresses.arrival.components.region = this._getAddressComponent(address, 'administrative_area_level_1');
+			
+			this.data.addresses.arrival.location.lat = address.geometry.location.lat();
+			this.data.addresses.arrival.location.lng = address.geometry.location.lng();
+			this.data.addresses.arrival.location.placeId = address.place_id;
+
+			// Enable next step if both addresses are filled
+			if(this._elements.departure.address.value.formatted_address && this._elements.arrival.address.value.formatted_address){
+				this._elements.validation.addresses.disabled = false;
+			}else{
+				this._elements.validation.addresses.disabled = true;
+			}
+		});
+
+		// Address options toggler
+		if(Object.values(this._parameters.options).some(option => option == true)){
+			this._elements.arrival.optionToggler.addEventListener('click', e => {
+				e.preventDefault();
+				
+				if(this._elements.arrival.optionToggler.classList.contains('mcc-address-options-enable')){
+					this._elements.arrival.optionToggler.classList.remove('mcc-address-options-enable');
+					this._elements.arrival.optionToggler.classList.add('mcc-address-options-disable');
+					this._elements.arrival.optionToggler.innerText = this._translated().lessAddressOptions;
+	
+					this._elements.wrapper.querySelector('.mcc-arrival.mcc-address-options').classList.remove('mcc-hidden');
+				}else{
+					this._elements.arrival.optionToggler.classList.remove('mcc-address-options-disable');
+					this._elements.arrival.optionToggler.classList.add('mcc-address-options-enable');
+					this._elements.arrival.optionToggler.innerText = this._translated().moreAddressOptions;
+	
+					this._elements.wrapper.querySelector('.mcc-arrival.mcc-address-options').classList.add('mcc-hidden');
+				}
+			});
+	
+			// Address options
+			if(this._parameters.options.floor){
+				this._elements.arrival.options.floor.addEventListener('change', () => {
+					this.data.addresses.arrival.options.floor = +this._elements.arrival.options.floor.value;
+				});
+			}
+	
+			if(this._parameters.options.lift){
+				this._elements.arrival.options.lift.addEventListener('change', () => {
+					this.data.addresses.arrival.options.lift = this._elements.arrival.options.lift.value == 'true';
+				});
+			}
+			
+			if(this._parameters.options.porterageDistance){
+				this._elements.arrival.options.porterageDistance.addEventListener('change', () => {
+					this.data.addresses.arrival.options.porterageDistance = +this._elements.arrival.options.porterageDistance.value;
+				});
+			}
 		}
 	}
 
@@ -920,8 +1024,8 @@ class MovingCostCalculator{
 					`;
 
 					// Do stuff with the estimations here
-					this._elements.wrapper.querySelector('section.mcc-loader').classList.remove('mcc-active');
-					this._elements.wrapper.querySelector('section.mcc-estimations').classList.add('mcc-active');
+					this._elements.wrapper.querySelector('section.mcc-loader').classList.add('mcc-hidden');
+					this._elements.wrapper.querySelector('section.mcc-estimations').classList.remove('mcc-hidden');
 				},
 				error: error => {
 					console.log(error);
@@ -929,8 +1033,8 @@ class MovingCostCalculator{
 			});
 		}else{
 			// Calculate data locally here
-			this._elements.wrapper.querySelector('section.mcc-loader').classList.remove('mcc-active');
-			this._elements.wrapper.querySelector('section.mcc-estimations').classList.add('mcc-active');
+			this._elements.wrapper.querySelector('section.mcc-loader').classList.add('mcc-hidden');
+			this._elements.wrapper.querySelector('section.mcc-estimations').classList.remove('mcc-hidden');
 		}
 
 		return this;

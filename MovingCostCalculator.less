@@ -3,11 +3,63 @@
 	font-family: sans-serif;
 	border: 1px solid grey;
 
-	.mcc-active{
-		display: block;
+	.smooth{
+		transition: max-height .5s, transform .2s;
+		transition-timing-function: ease-in;
+		transform: translateX(0);
+	}
+
+	.mcc-hidden{
+		transition-timing-function: ease-out;
+		transform: translateX(100vw) !important;
+		max-height: 0 !important;
+		margin: 0 !important;
+		overflow: hidden;
 	}
 
 	section{
-		display: none;
+		.smooth();
+
+		&.mcc-addresses{
+			a{
+				text-decoration: none;
+		
+				&:link,&:visited{
+					color: inherit;
+				}
+		
+				&:hover,&:active{
+					opacity: 0.8;
+				}
+			}
+
+			.mcc-address-options-toggler{
+				font-size: 10px;
+				margin: 0;
+		
+				a{
+					&.mcc-address-options-enable{
+						&:before{
+							content: 'v';
+						}
+					}
+					
+					&.mcc-address-options-disable{
+						&:before{
+							content: 'x';
+						}
+					}
+		
+					&:before{
+						padding-right: 5px;
+						text-decoration: none;
+					}
+				}
+			}
+
+			.mcc-address-options{
+				.smooth();
+			}
+		}
 	}
 }

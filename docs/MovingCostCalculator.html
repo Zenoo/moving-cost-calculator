@@ -259,6 +259,43 @@
 
         <tr>
             
+                <td class="name"><code>remoteCalculator</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">URL to use for a remote calculation</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>googleAPIKey</code></td>
             
 
@@ -364,6 +401,227 @@
             
 
             <td class="description last">Adds custom translations to the dictionary</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Options to enable/disable
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>floor</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last">Ask for floor ?</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>lift</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last">Ask for lift ?</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>porterageDistance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last">Ask for porterage distance ?</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rooms</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">MovingVolumeCalculator.Rooms</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Custom rooms</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -605,6 +863,307 @@
 
         <tr>
             
+                <td class="name"><code>components</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address components
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>streetNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' street number</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>route</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' route</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>zipCode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' zip code</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>locality</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' locality</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>country</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' country</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>countryCode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' country code</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>department</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' department</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>region</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' region</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>location.lat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' latitude</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>location.lng</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' longitude</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>location.placeId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' place ID</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>options</code></td>
             
 
@@ -686,29 +1245,6 @@
             
 
             <td class="description last">Does the address have a lift ?</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>furnitureLift</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Does the address require a furniture lift ?</td>
         </tr>
 
     
@@ -816,6 +1352,307 @@
 
         <tr>
             
+                <td class="name"><code>components</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address components
+                <h6>Properties</h6>
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>streetNumber</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' street number</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>route</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' route</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>zipCode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' zip code</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>locality</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' locality</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>country</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' country</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>countryCode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' country code</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>department</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' department</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>region</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' region</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>location.lat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' latitude</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>location.lng</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' longitude</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>location.placeId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Address' place ID</td>
+        </tr>
+
+    
+
+        <tr>
+            
                 <td class="name"><code>options</code></td>
             
 
@@ -897,29 +1734,6 @@
             
 
             <td class="description last">Does the address have a lift ?</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>furnitureLift</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Does the address require a furniture lift ?</td>
         </tr>
 
     
@@ -1071,7 +1885,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line173">line 173</a>
+        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line242">line 242</a>
     </li></ul></dd>
     
 
@@ -1088,7 +1902,7 @@
 
     <h5>Example</h5>
     
-    <pre class="prettyprint"><code>{  addresses: {    departure: {      value: '',      options: {        floor: 0,        lift: false,        furnitureLift: false,        porterageDistance: 5      }    },    arrival: {      value: '',      options: {        floor: 0,        lift: false,        furnitureLift: false,        porterageDistance: 5      }    }  },  volume: 0,  volumeData: {},  contact: ''};</code></pre>
+    <pre class="prettyprint"><code>{  addresses: {    departure: {      value: '',      components: {        streetNumber: '',        route: '',        zipCode: '',        locality: '',        country: '',        countryCode: '',        department: '',        region: ''      },      location:{        lat: 0,        lng: 0,        placeId: ''      },      options: {        floor: 0,        lift: false,        porterageDistance: 0      }    },    arrival: {      value: '',      components: {        streetNumber: '',        route: '',        zipCode: '',        locality: '',        country: '',        countryCode: '',        department: '',        region: ''      },      location:{        lat: 0,        lng: 0        placeId: ''      },      options: {        floor: 0,        lift: false,        porterageDistance: 0      }    }  },  volume: 0,  volumeData: {},  contact: ''};</code></pre>
 
 
 
@@ -1205,7 +2019,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line695">line 695</a>
+        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line1056">line 1056</a>
     </li></ul></dd>
     
 
@@ -1291,7 +2105,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line685">line 685</a>
+        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line1046">line 1046</a>
     </li></ul></dd>
     
 
@@ -1426,7 +2240,115 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line676">line 676</a>
+        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line987">line 987</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The current MovingCostCalculator
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="MovingCostCalculator.html">MovingCostCalculator</a></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="validate"><span class="type-signature"></span>validate<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="MovingCostCalculator.html">MovingCostCalculator</a>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Validates the calculator data & calculates the estimations
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="MovingCostCalculator.js.html">MovingCostCalculator.js</a>, <a href="MovingCostCalculator.js.html#line997">line 997</a>
     </li></ul></dd>
     
 
@@ -1656,7 +2578,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Oct 19 2018 14:35:07 GMT+0200 (Romance Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Nov 16 2018 11:32:51 GMT+0100 (Romance Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

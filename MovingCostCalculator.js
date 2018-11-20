@@ -1,5 +1,5 @@
 /* exported MovingCostCalculator */
-/* global AddressSearch, MovingVolumeCalculator, AjaxSender, google */
+/* global AddressSearch, MovingVolumeCalculator, AjaxSender, google, Slickloader */
 
 /**
  * The AddressSearch class
@@ -89,6 +89,7 @@ class MovingCostCalculator{
 		 * @property {Element} 					arrival.options.porterageDistance 	Arrival address porterage distance element
 		 * @property {MovingVolumeCalculator} 	volume 								volume MovingVolumeCalculator
 		 * @property {Element} 					contact 							Contact element
+		 * @property {Slickloader} 				loader 								Loader element
 		 * @property {Object} 					validation 							Holder for the validation buttons
 		 * @property {Object} 					validation.addresses 				Addresses validation
 		 * @property {Object} 					validation.contact 					Contact validation
@@ -116,6 +117,7 @@ class MovingCostCalculator{
 			},
 			volume: null,
 			contact: null,
+			loader: null,
 			validation: {
 				addresses: null,
 				contact: null
@@ -317,13 +319,13 @@ class MovingCostCalculator{
 				solve();
 			}else{
 				const movingVolumeCalculatorScript = new Promise(resolve => {
-					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/moving-volume-calculator/master/MovingVolumeCalculator.min.js', () => {
+					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/moving-volume-calculator/v0.4.2/MovingVolumeCalculator.min.js', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: MovingVolumeCalculator script LOADED !');
 						resolve();
 					});
 				});
 				const movingVolumeCalculatorStyle = new Promise(resolve => {
-					this._loadResource('style', 'https://gitcdn.link/repo/Zenoo/moving-volume-calculator/master/MovingVolumeCalculator.min.css', () => {
+					this._loadResource('style', 'https://gitcdn.link/repo/Zenoo/moving-volume-calculator/v0.4.2/MovingVolumeCalculator.min.css', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: MovingVolumeCalculator style LOADED !');
 						resolve();
 					});
@@ -400,7 +402,7 @@ class MovingCostCalculator{
 				solve();
 			}else{
 				const ajaxSenderScript = new Promise(resolve => {
-					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/ajax-sender/1d834e01a9ffa3965d4a6adb2eade9f3d084e517/AjaxSender.min.js', () => {
+					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/ajax-sender/v0.1.7/AjaxSender.min.js', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: AjaxSender script LOADED !');
 						resolve();
 					});
@@ -412,7 +414,31 @@ class MovingCostCalculator{
 			}
 		});
 
-		return Promise.all([movingVolumeCalculatorDependency, googleMapsAPIDependency, addressSearchDependency, ajaxSenderDependency]);
+		// AddressSearch
+		const slickLoaderDependency = new Promise(solve => {
+			if(typeof AddressSearch == 'function'){
+				solve();
+			}else{
+				const slickLoaderScript = new Promise(resolve => {
+					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/slick-loader/v1.1.0/slick-loader.min.js', () => {
+						if(this._parameters.debug) console.log('DEPENDENCIES: SlickLoader script LOADED !');
+						resolve();
+					});
+				});
+				const slickLoaderStyle = new Promise(resolve => {
+					this._loadResource('style', 'https://gitcdn.link/repo/Zenoo/slick-loader/v1.1.0/slick-loader.min.css', () => {
+						if(this._parameters.debug) console.log('DEPENDENCIES: SlickLoader style LOADED !');
+						resolve();
+					});
+				});
+
+				Promise.all([slickLoaderScript, slickLoaderStyle]).then(() => {
+					solve();
+				});
+			}
+		});
+
+		return Promise.all([movingVolumeCalculatorDependency, googleMapsAPIDependency, addressSearchDependency, ajaxSenderDependency, slickLoaderDependency]);
 	}
 
 	/**
@@ -467,7 +493,9 @@ class MovingCostCalculator{
 				no: 'No',
 				enterContact: 'Please enter your mail to access your estimations',
 				loading: 'Loading ...',
-				next: 'Next'
+				next: 'Next',
+				priceFrom: 'From',
+				services: 'Services'
 			},
 			fr: {
 				title: 'Estimez le coût de votre déménagement',
@@ -485,7 +513,9 @@ class MovingCostCalculator{
 				no: 'Non',
 				enterContact: 'Veuillez renseigner votre adresse mail pour accéder à vos estimations',
 				loading: 'Chargement ...',
-				next: 'Suivant'
+				next: 'Suivant',
+				priceFrom: 'A partir de',
+				services: 'Services'
 			}
 		};
 		
@@ -498,7 +528,7 @@ class MovingCostCalculator{
      * @private
      */
     _build(){
-		this._elements.wrapper.classList.add('mcc-wrapper');
+		this._elements.wrapper.classList.add('mcc-wrapper', 'mcc-stylized');
 
 		/*
 		 * Title
@@ -553,18 +583,25 @@ class MovingCostCalculator{
 		title.innerHTML = this._translated().addressesTitle;
 		section.appendChild(title);
 
+		const addressesWrapper = document.createElement('div');
+
+		section.appendChild(addressesWrapper);
+
+		addressesWrapper.appendChild(div);
+
 		// Departure
 		p.innerText = this._translated().departureAddress;
-		section.appendChild(p);
+		div.appendChild(p);
 
-		section.appendChild(input);
+		input.classList.add('mcc-address', 'mcc-departure');
+		div.appendChild(input);
 		this._elements.departure.address = new AddressSearch(input);
 
 		// Departure options toggler
 		if(Object.values(this._parameters.options).some(option => option == true)){
 			p = document.createElement('p');
 			p.classList.add('mcc-address-options-toggler');
-			section.appendChild(p);
+			div.appendChild(p);
 	
 			this._elements.departure.optionToggler = document.createElement('a');
 			this._elements.departure.optionToggler.classList.add('mcc-address-options-enable');
@@ -573,25 +610,31 @@ class MovingCostCalculator{
 			p.appendChild(this._elements.departure.optionToggler);
 	
 			// Departure options
-			div.classList.add('mcc-address-options', 'mcc-departure', 'mcc-hidden');
-			section.appendChild(div);
-			this._buildAddressOptions(this._elements.departure.options, div);
+			const options = document.createElement('div');
+
+			options.classList.add('mcc-address-options', 'mcc-departure', 'mcc-hidden');
+			div.appendChild(options);
+			this._buildAddressOptions(this._elements.departure.options, options);
 		}
+
+		div = document.createElement('div');
+		addressesWrapper.appendChild(div);
 		
 		// Arrival
 		p = document.createElement('p');
 		p.innerText = this._translated().arrivalAddress;
-		section.appendChild(p);
+		div.appendChild(p);
 
 		input = document.createElement('input');
-		section.appendChild(input);
+		input.classList.add('mcc-address', 'mcc-arrival');
+		div.appendChild(input);
 		this._elements.arrival.address = new AddressSearch(input);
 
 		// Arrival options toggler
 		if(Object.values(this._parameters.options).some(option => option == true)){
 			p = document.createElement('p');
 			p.classList.add('mcc-address-options-toggler');
-			section.appendChild(p);
+			div.appendChild(p);
 	
 			this._elements.arrival.optionToggler = document.createElement('a');
 			this._elements.arrival.optionToggler.classList.add('mcc-address-options-enable');
@@ -600,15 +643,17 @@ class MovingCostCalculator{
 			p.appendChild(this._elements.arrival.optionToggler);
 	
 			// Arrival options
-			div = document.createElement('div');
-			div.classList.add('mcc-address-options', 'mcc-arrival', 'mcc-hidden');
-			section.appendChild(div);
-			this._buildAddressOptions(this._elements.arrival.options, div);
+			const options = document.createElement('div');
+			
+			options.classList.add('mcc-address-options', 'mcc-arrival', 'mcc-hidden');
+			div.appendChild(options);
+			this._buildAddressOptions(this._elements.arrival.options, options);
 		}
 		
 
 		// Validation
 		p = document.createElement('p');
+		p.classList.add('mcc-validation');
 		this._elements.validation.addresses = document.createElement('button');
 		this._elements.validation.addresses.disabled = true;
 		this._elements.validation.addresses.innerHTML = this._translated().next;
@@ -628,6 +673,8 @@ class MovingCostCalculator{
 				const p = document.createElement('p'),
 				span = document.createElement('span');
 
+				p.classList.add('mcc-address-option-'+option);
+
 				if(['lift'].includes(option)){
 					options[option] = document.createElement('select');
 
@@ -643,6 +690,10 @@ class MovingCostCalculator{
 					options[option].appendChild(optionTag);
 				}else{
 					options[option] = document.createElement('input');
+
+					if(option == 'porterageDistance'){
+						options[option].setAttribute('placeholder', '0 m');
+					}
 				}
 
 				span.innerText = this._translated()[option];
@@ -697,6 +748,7 @@ class MovingCostCalculator{
 			section.appendChild(this._elements.contact);
 
 			// Validation
+			p.classList.add('mcc-validation');
 			this._elements.validation.contact = document.createElement('button');
 			this._elements.validation.contact.disabled = true;
 			this._elements.validation.contact.innerHTML = this._translated().next;
@@ -710,14 +762,10 @@ class MovingCostCalculator{
      * @private
      */
 	_buildLoader(){
-		const 	section = document.createElement('section'),
-				p = document.createElement('p');
+		const 	section = document.createElement('section');
 
 		section.classList.add('mcc-loader', 'mcc-hidden');
 		this._elements.wrapper.appendChild(section);
-
-		p.innerHTML = this._translated().loading;
-		section.appendChild(p);
 	}
 
 	/**
@@ -777,6 +825,7 @@ class MovingCostCalculator{
 				this._elements.wrapper.querySelector('section.mcc-contact').classList.remove('mcc-hidden');
 				this._elements.wrapper.querySelector('section.mcc-volume').classList.add('mcc-hidden');
 			}else{
+				this._toggleLoader(true);
 				this._elements.wrapper.querySelector('section.mcc-loader').classList.remove('mcc-hidden');
 				this._elements.wrapper.querySelector('section.mcc-volume').classList.add('mcc-hidden');
 
@@ -791,7 +840,7 @@ class MovingCostCalculator{
 		if(this._parameters.askForContact){
 			this._elements.contact.addEventListener('input', () => {
 				const emailValidator = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-				
+
 				if(emailValidator.test(this._elements.contact.value)){
 					this.data.contact = this._elements.contact.value;
 	
@@ -803,10 +852,21 @@ class MovingCostCalculator{
 				}
 			});
 
+			this._elements.contact.addEventListener('keyup', e => {
+				if(e.key == 'Enter'){
+					this._toggleLoader(true);
+					this._elements.wrapper.querySelector('section.mcc-loader').classList.remove('mcc-hidden');
+					this._elements.wrapper.querySelector('section.mcc-contact').classList.add('mcc-hidden');
+
+					this.validate();
+				}
+			});
+
 			/**
 			 * Contact validation
 			 */
 			this._elements.validation.contact.addEventListener('click', () => {
+				this._toggleLoader(true);
 				this._elements.wrapper.querySelector('section.mcc-loader').classList.remove('mcc-hidden');
 				this._elements.wrapper.querySelector('section.mcc-contact').classList.add('mcc-hidden');
 
@@ -958,6 +1018,21 @@ class MovingCostCalculator{
 	}
 
 	/**
+	 * Toggles the estimations loader
+	 * @param {Boolean?} force Force the display ?
+	 */
+	_toggleLoader(force){
+		if(!this._elements.loader){
+			this._elements.loader = new Slickloader(this._elements.wrapper.querySelector('.mcc-loader'));
+		}
+
+		const toToggle = typeof force === 'undefined' ? !this._elements.loader.element.classList.contains('active') : force;
+
+		if(toToggle) this._elements.loader.enable();
+		else this._elements.loader.disable();
+	}
+
+	/**
      * Returns the dictionnary for the current lang
 	 * @returns {Object} The dictionnary for the current lang
      * @private
@@ -997,31 +1072,40 @@ class MovingCostCalculator{
 	validate(){
 		if(this._parameters.remoteCalculator){
 			new AjaxSender(this._parameters.remoteCalculator, {
+				headers: {
+					'Content-Type': 'application/json'
+				},
 				data: this.data,
 				method: 'POST',
+				responseType: 'json',
 				load: response => {
-					console.log(response);
-
 					this._elements.wrapper.querySelector('section.mcc-estimations').innerHTML = `
-						<div style="font-family: 'Courier New', Courier, monospace">${response[0].logs.map(log => `${log}<br />`).join('')}</div>
-					`;
-
-					this._elements.wrapper.querySelector('section.mcc-estimations').innerHTML += `
 						<ul>
-							${response.map(offer => `
-								<li>
-									<p>${offer.name}</p>
-									<p>(Admin) Prix: ${offer.price} €</p>
-									<p>De: ${offer.price - offer.range} €</p>
-									<p>A: ${offer.price + offer.range} €</p>
-									<p>Services:</p>
-									${offer.services.map(service => `
-										<p>${service}</p>
-									`).join('')}
-								</li>
-							`).join('')}
+							${response.map(offer => `<li>
+								<p class="mcc-offer-name">${offer.name}</p>
+								<p>${this._translated().priceFrom} <span class="mcc-offer-price">${offer.price} €</span></p>
+								<p>${this._translated().services}:</p>
+								${offer.services.map(service => `
+									<p class="mcc-offer-service">${service}</p>
+								`).join('')}
+							</li>`).join('')}
 						</ul>
 					`;
+
+					// TEMPORARY FOR DEBUGGING
+					this._elements.wrapper.querySelector('section.mcc-estimations').innerHTML += `
+						<div class="mcc-logs">${response[0].logs.map(log => `${log}<br />`).join('')}</div>
+					`;
+
+					const keyListener = e => {
+						if(e.keyCode == 76){
+							this._elements.wrapper.querySelector('.mcc-logs').classList.toggle('debug');
+						}
+					};
+
+					window.removeEventListener('keyup', keyListener);
+					window.addEventListener('keyup', keyListener);
+					// END OF TEMPORARY
 
 					// Do stuff with the estimations here
 					this._elements.wrapper.querySelector('section.mcc-loader').classList.add('mcc-hidden');
@@ -1029,6 +1113,7 @@ class MovingCostCalculator{
 				},
 				error: error => {
 					console.log(error);
+					console.log(error.response);
 				}
 			});
 		}else{

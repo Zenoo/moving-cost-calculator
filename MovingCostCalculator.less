@@ -1,10 +1,18 @@
+@font-face{
+	font-family: 'Montserrat';
+	src: url('assets/Montserrat-Regular.ttf');
+}
+
 .mcc-wrapper{
 	width: 100%;
-	font-family: sans-serif;
-	border: 1px solid grey;
+	font-family: 'Montserrat', sans-serif;
+
+	ul{
+		list-style-type: none;
+	}
 
 	.smooth{
-		transition: max-height .5s, transform .2s;
+		transition: max-height .5s, width .5s, transform .2s;
 		transition-timing-function: ease-in;
 		transform: translateX(0);
 	}
@@ -13,6 +21,7 @@
 		transition-timing-function: ease-out;
 		transform: translateX(100vw) !important;
 		max-height: 0 !important;
+		width: 0 !important;
 		margin: 0 !important;
 		overflow: hidden;
 	}
@@ -59,6 +68,290 @@
 
 			.mcc-address-options{
 				.smooth();
+			}
+		}
+	}
+
+	&.mcc-stylized{
+		border-radius: 5px;
+		-webkit-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+		-moz-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+		box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+		background-color: #f8f8f8;
+		font-family: 'Montserrat', sans-serif;
+
+		&>h3 {
+			text-align: center;
+			margin: 0;
+			padding: 15px 5px;
+			font-weight: 100;
+			border-radius: 5px;
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+			background-color: fade(black, 10%);
+			color: fade(black, 50%);
+			text-transform: uppercase;
+		}
+
+		// GENERAL
+		&>section{
+			padding: 10px;
+
+			&.mcc-hidden{
+				padding: 0;
+			}
+
+			h4{
+				font-weight: 100;
+				font-size: 18px;
+				text-align: center;
+			}
+
+			.mcc-validation{
+				text-align: center;
+
+				button{
+					-webkit-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+					-moz-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+					box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+					border-radius: 20px;
+					border: 1px solid transparent;
+					padding: 5px 10px;
+	
+					&:focus,&:not(:disabled):hover{
+						-webkit-box-shadow: 0 0 3pt 2pt #4D90FE;
+						-moz-box-shadow: 0 0 3pt 2pt #4D90FE;
+						box-shadow: 0 0 3pt 2pt #4D90FE;
+						outline: none;
+						cursor: pointer;
+					}
+				}
+			}
+
+			// ADDRESSES
+			&.mcc-addresses{
+				&>div{
+					display: flex;
+					flex-wrap: wrap;
+					justify-content: space-around;
+	
+					&>div{
+						margin: 0 5px;
+	
+						&>p:first-of-type{
+							margin: 0;
+							font-size: 14px;
+							color: grey;
+							text-align: center;
+							margin-bottom: 5px;
+						}
+					}
+				}
+
+				.mcc-address{
+					border-radius: 20px;
+					padding: 5px 10px;
+					border: 1px solid transparent;
+					font-family: 'Montserrat';
+					width: calc(~"100% - 22px");
+
+					&.address-search-input{
+						-webkit-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+						-moz-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+						box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+						z-index: 68;
+
+						&:focus{
+							-webkit-box-shadow: 0 0 3pt 2pt #4D90FE;
+							-moz-box-shadow: 0 0 3pt 2pt #4D90FE;
+							box-shadow: 0 0 3pt 2pt #4D90FE;
+							outline: none;
+						}
+
+						.lure{
+							z-index: 0;
+						}
+					}
+
+					&.address-search-typeahead{
+						z-index: 67;
+						background-color: white;
+
+						.lure{
+							z-index: 0;
+						}
+					}
+				}
+
+				.address-search-predictions{
+					padding-top: 20px;
+					transform: translateY(-20px);
+
+					li{
+						font-family: 'Montserrat';
+					}
+				}
+
+				.mcc-address-options-toggler{
+					margin-top: 5px;
+				}
+
+				.mcc-address-options{
+					margin-top: 10px;
+
+					p{
+						margin: 5px 0 5px 10px;
+
+						span{
+							display: block;
+							font-size: 12px;
+							padding-left: 5px;
+							padding-bottom: 5px;
+						}
+
+						input, select{
+							-webkit-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+							-moz-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+							box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+							border-radius: 20px;
+							border: 1px solid transparent;
+							padding: 5px 10px;
+
+							&:focus{
+								-webkit-box-shadow: 0 0 3pt 2pt #4D90FE;
+								-moz-box-shadow: 0 0 3pt 2pt #4D90FE;
+								box-shadow: 0 0 3pt 2pt #4D90FE;
+								outline: none;
+							}
+						}
+
+						&.mcc-address-option-floor{
+							display: inline-block;
+
+							input{
+								width: 16px;
+								text-align: center;
+							}
+						}
+
+						&.mcc-address-option-lift{
+							display: inline-block;
+						}
+
+						&.mcc-address-option-porterageDistance{
+							display: inline-block;
+
+							input{
+								width: 22px;
+							}
+						}
+					}
+				}
+			}
+
+			&.mcc-volume{
+				.mvc-wrapper{
+					-webkit-box-shadow: none;
+					-moz-box-shadow: none;
+					box-shadow: none;
+					border-radius: 0;
+					border: 0;
+				}
+			}
+
+			&.mcc-contact{
+				text-align: center;
+
+				input{
+					-webkit-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+					-moz-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+					box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+					border-radius: 20px;
+					border: 1px solid transparent;
+					padding: 5px 10px;
+
+					&:focus{
+						-webkit-box-shadow: 0 0 3pt 2pt #4D90FE;
+						-moz-box-shadow: 0 0 3pt 2pt #4D90FE;
+						box-shadow: 0 0 3pt 2pt #4D90FE;
+						outline: none;
+					}
+				}
+			}
+
+			&.mcc-loader{
+				height: 200px;
+
+				.slick-loader{
+					background-color: transparent;
+				}
+			}
+
+			&.mcc-estimations{
+				.mcc-logs{
+					font-family: 'Courier New', Courier, monospace;
+					display: none;
+
+					&.debug{
+						display: block;
+					}
+				}
+
+				ul{
+					text-align: center;
+					padding-left: 0;
+
+					li{
+						display: inline-block;
+						max-width: calc(~"100% / 3 - 32px");
+						background-color: white;
+						vertical-align: top;
+						padding: 20px 15px;
+						-webkit-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+						-moz-box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+						box-shadow: 0px 0px 5px 0px rgba(156,156,156,1);
+						border-radius: 20px;
+						border: 1px solid transparent;
+
+						&:hover{
+							-webkit-box-shadow: 0 0 3pt 2pt #4D90FE;
+							-moz-box-shadow: 0 0 3pt 2pt #4D90FE;
+							box-shadow: 0 0 3pt 2pt #4D90FE;
+							cursor: pointer;
+						}
+
+						.mcc-offer-name{
+							font-weight: bold;
+							font-size: 20px;
+							margin: 5px 0;
+						}
+
+						.mcc-offer-price{
+							font-weight: bold;
+						}
+
+						.mcc-offer-service{
+							text-align: left;
+							margin: 5px 0;
+							font-size: 12px;
+						}
+
+						&:first-of-type{
+							margin-right: -10px;
+							z-index: 1;
+						}
+
+						&:nth-of-type(2){
+							margin-top: 20px;
+							z-index: 2;
+						}
+
+						&:last-of-type{
+							margin-left: -10px;
+							z-index: 1;
+						}
+					}
+				}
 			}
 		}
 	}

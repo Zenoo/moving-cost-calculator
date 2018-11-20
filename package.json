@@ -1,6 +1,6 @@
 {
   "name": "moving-cost-calculator",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Calculate the cost for your move",
   "main": "MovingCostCalculator.js",
   "scripts": {
@@ -21,8 +21,8 @@
   "dependencies": {
     "moving-volume-calculator": ">=0.4.2",
     "address-searcher": ">=1.8.9",
-	"ajax-sender": ">=0.1.7",
-	"slick-loader": ">=1.1.2"
+    "ajax-sender": ">=0.1.7",
+    "slick-loader": ">=1.1.2"
   },
   "author": "Zenoo",
   "license": "MIT",

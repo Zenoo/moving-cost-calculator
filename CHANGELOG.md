@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.8](https://github.com/Zenoo/moving-cost-calculator/compare/v0.3.7...v0.3.8) (2020-05-03)
+
+
+### Bug Fixes
+
+* Update slick-loader ([1f18617](https://github.com/Zenoo/moving-cost-calculator/commit/1f186172984d73c5f42097980fe02d8e465b9cf5))
+
 ### [0.3.7](https://github.com/Zenoo/moving-cost-calculator/compare/v0.3.6...v0.3.7) (2020-05-03)
 
 

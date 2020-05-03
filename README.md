@@ -10,8 +10,8 @@ Calculate the cost for your move
 
 Simply import MovingCostCalculator into your HTML.
 ```
-<link rel="stylesheet" type="text/css" href="https://gitcdn.link/repo/Zenoo/moving-cost-calculator/master/MovingCostCalculator.min.css">
-<script src="https://gitcdn.link/repo/Zenoo/moving-cost-calculator/master/MovingCostCalculator.min.js"></script>	
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/moving-cost-calculator/MovingVolumeCalculator.min.css">
+<script src="https://unpkg.com/moving-cost-calculator/MovingCostCalculator.min.js"></script>	
 ```
 * **How to use**
 

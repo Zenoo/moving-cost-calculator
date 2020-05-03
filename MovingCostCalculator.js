@@ -319,13 +319,13 @@ class MovingCostCalculator{
 				solve();
 			}else{
 				const movingVolumeCalculatorScript = new Promise(resolve => {
-					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/moving-volume-calculator/v0.4.2/MovingVolumeCalculator.min.js', () => {
+					this._loadResource('script', 'https://unpkg.com/moving-volume-calculator@0.4.2/MovingVolumeCalculator.min.js', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: MovingVolumeCalculator script LOADED !');
 						resolve();
 					});
 				});
 				const movingVolumeCalculatorStyle = new Promise(resolve => {
-					this._loadResource('style', 'https://gitcdn.link/repo/Zenoo/moving-volume-calculator/v0.4.2/MovingVolumeCalculator.min.css', () => {
+					this._loadResource('style', 'https://unpkg.com/moving-volume-calculator@0.4.2/MovingVolumeCalculator.min.css', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: MovingVolumeCalculator style LOADED !');
 						resolve();
 					});
@@ -378,13 +378,13 @@ class MovingCostCalculator{
 				solve();
 			}else{
 				const addressSearchScript = new Promise(resolve => {
-					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/address-search/master/address-search.min.js', () => {
+					this._loadResource('script', 'https://unpkg.com/address-searcher@1.11.1/address-search.min.js', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: AddressSearch script LOADED !');
 						resolve();
 					});
 				});
 				const addressSearchStyle = new Promise(resolve => {
-					this._loadResource('style', 'https://gitcdn.link/repo/Zenoo/address-search/master/address-search.min.css', () => {
+					this._loadResource('style', 'https://unpkg.com/address-searcher@1.11.1/address-search.min.css', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: AddressSearch style LOADED !');
 						resolve();
 					});
@@ -402,7 +402,7 @@ class MovingCostCalculator{
 				solve();
 			}else{
 				const ajaxSenderScript = new Promise(resolve => {
-					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/ajax-sender/v0.1.7/AjaxSender.min.js', () => {
+					this._loadResource('script', 'https://unpkg.com/ajax-sender@1.2.2/AjaxSender.min.js', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: AjaxSender script LOADED !');
 						resolve();
 					});
@@ -420,13 +420,13 @@ class MovingCostCalculator{
 				solve();
 			}else{
 				const slickLoaderScript = new Promise(resolve => {
-					this._loadResource('script', 'https://gitcdn.link/repo/Zenoo/slick-loader/v1.1.0/slick-loader.min.js', () => {
+					this._loadResource('script', 'https://unpkg.com/slick-loader@1.1.21/slick-loader.min.js', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: SlickLoader script LOADED !');
 						resolve();
 					});
 				});
 				const slickLoaderStyle = new Promise(resolve => {
-					this._loadResource('style', 'https://gitcdn.link/repo/Zenoo/slick-loader/v1.1.0/slick-loader.min.css', () => {
+					this._loadResource('style', 'https://unpkg.com/slick-loader@1.1.21/slick-loader.min.css', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: SlickLoader style LOADED !');
 						resolve();
 					});

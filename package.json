@@ -4,7 +4,7 @@
   "description": "Calculate the cost for your move",
   "main": "MovingCostCalculator.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "release": "standard-version -s && rm -r docs/ && jsdoc . -R README.md -c jsdoc-conf.json && git add docs/* && git commit -m 'chore: Docs generation'"
   },
   "repository": {
     "type": "git",
@@ -29,5 +29,9 @@
   "bugs": {
     "url": "https://github.com/Zenoo/moving-cost-calculator/issues"
   },
-  "homepage": "https://github.com/Zenoo/moving-cost-calculator#readme"
+  "homepage": "https://github.com/Zenoo/moving-cost-calculator#readme",
+  "devDependencies": {
+    "jsdoc": "^3.6.4",
+    "standard-version": "^7.1.0"
+  }
 }

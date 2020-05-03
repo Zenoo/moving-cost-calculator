@@ -416,17 +416,17 @@ class MovingCostCalculator{
 
 		// AddressSearch
 		const slickLoaderDependency = new Promise(solve => {
-			if(typeof AddressSearch == 'function'){
+			if(typeof SlickLoader == 'object'){
 				solve();
 			}else{
 				const slickLoaderScript = new Promise(resolve => {
-					this._loadResource('script', 'https://unpkg.com/slick-loader@1.1.21/slick-loader.min.js', () => {
+					this._loadResource('script', 'https://unpkg.com/slick-loader@1.1.24/slick-loader.min.js', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: SlickLoader script LOADED !');
 						resolve();
 					});
 				});
 				const slickLoaderStyle = new Promise(resolve => {
-					this._loadResource('style', 'https://unpkg.com/slick-loader@1.1.21/slick-loader.min.css', () => {
+					this._loadResource('style', 'https://unpkg.com/slick-loader@1.1.24/slick-loader.min.css', () => {
 						if(this._parameters.debug) console.log('DEPENDENCIES: SlickLoader style LOADED !');
 						resolve();
 					});

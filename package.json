@@ -22,7 +22,7 @@
     "moving-volume-calculator": ">=0.4.2",
     "address-searcher": ">=1.8.9",
     "ajax-sender": ">=0.1.7",
-    "slick-loader": ">=1.1.2"
+    "slick-loader": ">=1.1.24"
   },
   "author": "Zenoo",
   "license": "MIT",

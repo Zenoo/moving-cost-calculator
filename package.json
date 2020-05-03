@@ -4,7 +4,7 @@
   "description": "Calculate the cost for your move",
   "main": "MovingCostCalculator.js",
   "scripts": {
-    "release": "standard-version -s && rm -r docs/ && jsdoc . -R README.md -c jsdoc-conf.json && git add -u docs/* && git commit -m 'chore: Docs generation'"
+    "release": "standard-version -s && rm -r docs/ && jsdoc . -R README.md -c jsdoc-conf.json && git add -A docs && git commit -m 'chore: Docs generation'"
   },
   "repository": {
     "type": "git",

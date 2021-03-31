@@ -32,6 +32,6 @@
   "homepage": "https://github.com/Zenoo/moving-cost-calculator#readme",
   "devDependencies": {
     "jsdoc": "^3.6.4",
-    "standard-version": "^7.1.0"
+    "standard-version": "^9.1.1"
   }
 }

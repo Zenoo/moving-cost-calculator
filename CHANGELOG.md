@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.9](https://github.com/Zenoo/moving-cost-calculator/compare/v0.3.8...v0.3.9) (2021-03-31)
+
+
+### Bug Fixes
+
+* npm vulnerabilities ([bc49a5e](https://github.com/Zenoo/moving-cost-calculator/commit/bc49a5e3ed8cf0af24d25285090a797abfb2cf6c))
+
 ### [0.3.8](https://github.com/Zenoo/moving-cost-calculator/compare/v0.3.7...v0.3.8) (2020-05-03)
 
 

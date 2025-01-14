@@ -1,6 +1,6 @@
 {
   "name": "moving-cost-calculator",
-  "version": "0.3.9",
+  "version": "0.3.10",
   "description": "Calculate the cost for your move",
   "main": "MovingCostCalculator.js",
   "scripts": {

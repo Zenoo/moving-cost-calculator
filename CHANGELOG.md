@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.11](https://github.com/Zenoo/moving-cost-calculator/compare/v0.3.10...v0.3.11) (2025-01-14)
+
+
+### Bug Fixes
+
+* Publish actions versions ([86fcee3](https://github.com/Zenoo/moving-cost-calculator/commit/86fcee35442c3a8165607cdfea23b33c3d8d48e3))
+
 ## [0.3.10](https://github.com/Zenoo/moving-cost-calculator/compare/v0.3.9...v0.3.10) (2025-01-14)
 
 
